@@ -112,14 +112,6 @@ _G.dx9.Get = dxl.Get
 --// Table to string // credits to https://stackoverflow.com/a/42062321/19113503
 function dxl.TableToString(a)local b,c,d={},{},{}local e=1;local f="{\n"while true do local g=0;for h,i in pairs(a)do g=g+1 end;local j=1;for h,i in pairs(a)do if b[a]==nil or j>=b[a]then if string.find(f,"}",f:len())then f=f..",\n"elseif not string.find(f,"\n",f:len())then f=f.."\n"end;table.insert(d,f)f=""local k;if type(h)=="number"or type(h)=="boolean"then k="["..tostring(h).."]"else k="['"..tostring(h).."']"end;if type(i)=="number"or type(i)=="boolean"then f=f..string.rep('\t',e)..k.." = "..tostring(i)elseif type(i)=="table"then f=f..string.rep('\t',e)..k.." = {\n"table.insert(c,a)table.insert(c,i)b[a]=j+1;break else f=f..string.rep('\t',e)..k.." = '"..tostring(i).."'"end;if j==g then f=f.."\n"..string.rep('\t',e-1).."}"else f=f..","end else if j==g then f=f.."\n"..string.rep('\t',e-1).."}"end end;j=j+1 end;if g==0 then f=f.."\n"..string.rep('\t',e-1).."}"end;if#c>0 then a=c[#c]c[#c]=nil;e=b[a]==nil and e+1 or e-1 else break end end;table.insert(d,f)f=table.concat(d)return f end
 
---// Drawing //
-
-function dxl.DrawRect()
-
-end
-
-
-
 --// Better Console
 function dxl.ShowConsole()
     if dxl.isMouseInArea({dxl.Location[1] + dxl.Size[1] - 27, dxl.Location[2] + 3, dxl.Location[1] + dxl.Size[1] - 5, dxl.Location[2] + 19}) then
