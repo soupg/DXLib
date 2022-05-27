@@ -10,7 +10,7 @@ dxl.print(v) --// Prints value in console.
 dxl.error(v) --// Prints value in console (in red text).
 ```
 
-![dx9Lib Console](https://i.imgur.com/Famta4n.png)
+![dxLib Console](https://i.imgur.com/Famta4n.png)
 
 ### General Functions
 
