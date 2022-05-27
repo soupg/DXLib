@@ -1,17 +1,16 @@
---// BetterConsole //--
+--// DXLib //--
 
+--// Initiating Libraryprint
 if _G.dxl == nil then
     _G.dxl = {
+        --// Console Vars
         Location = {1000, 150}; -- Dynamic
-
         Size = {dx9.size().width / 2.95, dx9.size().height / 1.21}; -- Static
-
         FontColor = {255,255,255}; -- Static + [Changeable]
         MainColor = {28,28,28}; -- Static + [Changeable]
         BackgroundColor = {20,20,20}; -- Static + [Changeable]
         AccentColor = {0,85,255}; -- Static + [Changeable]
         OutlineColor = {50,50,50}; -- Static + [Changeable]
-
         Black = {0,0,0}; -- Static
 
         ErrorColor = {255,100,100};
@@ -24,12 +23,14 @@ if _G.dxl == nil then
 
         Hovering = false;
 
-        loadstringchaching = {};
-        oldloadstring = loadstring;
-        getchaching = {};
-        oldget = dx9.Get;
+        --// General Vars
+        LoadstringCaching = {};
+        GetCaching = {};
+        OldLoadstring = loadstring;
+        OldGet = dx9.Get;
     };
 end
+
 
 --// Boundary Check
 function dxl.isMouseInArea(area)
@@ -40,6 +41,8 @@ function dxl.isMouseInArea(area)
     end
 end
 
+
+--// Get Distance
 function dxl.GetDistance(v, i)
     local v1 = dx9.GetPosition(i);
     local v2 = dx9.GetPosition(v);
@@ -49,28 +52,36 @@ function dxl.GetDistance(v, i)
     return math.floor(math.sqrt(a+b+c)+0.5);
 end
 
+
+--// Json To Table
 function dxl.JsonToTable(json)
     return loadstring("return "..json:gsub('("[^"]-"):','[%1]='))()
 end
 
+
+--// Better Loadstring
 function dxl.loadstring(string)
-    if dxl.loadstringchaching[string] == nil then
-        dxl.loadstringchaching[string] = dxl.oldloadstring(string)
+    if dxl.LoadstringCaching[string] == nil then
+        dxl.LoadstringCaching[string] = dxl.OldLoadstring(string)
     else
-        return dxl.loadstringchaching[string]
+        return dxl.LoadstringCaching[string]
     end
 end
 _G.loadstring = dxl.loadstring
 
+
+--// Better Get
 function dxl.Get(string)
-    if dxl.getchaching[string] == nil then
-        dxl.getchaching[string] = dxl.oldget(string)
+    if dxl.GetCaching[string] == nil then
+        dxl.GetCaching[string] = dxl.OldGet(string)
     else
-        return dxl.getchaching[string]
+        return dxl.GetCaching[string]
     end
 end
 _G.dx9.Get = dxl.Get
 
+
+--// Better Console
 function dxl.ShowConsole()
     if dxl.isMouseInArea({dxl.Location[1] + dxl.Size[1] - 27, dxl.Location[2] + 3, dxl.Location[1] + dxl.Size[1] - 5, dxl.Location[2] + 19}) then
         if dx9.isLeftClick() then
@@ -207,13 +218,13 @@ function dxl.ShowConsole()
         end
     end
 
-
     dxl.StoredLogs = {};
     _G.dxl = dxl
 end
 
 
 
+--// Hooking DX9 Functions
 if _G.betterdebugrun == nil then
     local havethesamestructionchild = {"FindFirstChild","FindFirstChildOfClass","FindFirstDescendant"}
 
