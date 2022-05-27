@@ -7,6 +7,7 @@ DXLib is an addon library for dx9ware that adds useful features that dx9 by itse
 - Makes a lot of old dx9 functions overall better, as well as adds error logging with `dxl.ShowConsole()`
 
 #### DXLib Loadstring
+
 Paste this at the top of your code to start using the functions listed below!
 ```lua
 loadstring(dx9.Get("https://raw.githubusercontent.com/soupg/DXLib/main/main.lua"))()
