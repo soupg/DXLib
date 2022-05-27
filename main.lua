@@ -1,6 +1,5 @@
 --// BetterConsole //--
 
-local dxl = {};
 if _G.dxl == nil then
     _G.dxl = {
         Location = {1000, 150}; -- Dynamic
@@ -24,9 +23,13 @@ if _G.dxl == nil then
         Open = true;
 
         Hovering = false;
+
+        loadstringchaching = {};
+        oldloadstring = loadstring;
+        getchaching = {};
+        oldget = dx9.Get;
     };
 end
-local dxl = _G.dxl
 
 --// Boundary Check
 function dxl.isMouseInArea(area)
@@ -46,11 +49,27 @@ function dxl.GetDistance(v, i)
     return math.floor(math.sqrt(a+b+c)+0.5);
 end
 
-
 function dxl.JsonToTable(json)
     return loadstring("return "..json:gsub('("[^"]-"):','[%1]='))()
 end
 
+function dxl.loadstring(string)
+    if dxl.loadstringchaching[string] == nil then
+        dxl.loadstringchaching[string] = dxl.oldloadstring(string)
+    else
+        return dxl.loadstringchaching[string]
+    end
+end
+_G.loadstring = dxl.loadstring
+
+function dxl.Get(string)
+    if dxl.getchaching[string] == nil then
+        dxl.getchaching[string] = dxl.oldget(string)
+    else
+        return dxl.getchaching[string]
+    end
+end
+_G.dx9.Get = dxl.Get
 
 function dxl.ShowConsole()
     if dxl.isMouseInArea({dxl.Location[1] + dxl.Size[1] - 27, dxl.Location[2] + 3, dxl.Location[1] + dxl.Size[1] - 5, dxl.Location[2] + 19}) then
