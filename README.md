@@ -10,6 +10,8 @@ dxl.print(v) --// Prints value in console.
 dxl.error(v) --// Prints value in console (in red text).
 ```
 
+![dx9Lib Console](https://i.imgur.com/EX69ceN.png)
+
 ### General Functions
 
 ```lua
