@@ -28,6 +28,20 @@ if _G.dxl == nil then
 end
 local dxl = _G.dxl
 
+-- Fixed the Get function lag :D
+if _G.bettergetfunction == nil then
+    local oldget = _G["dx9"]["Get"] 
+    _G["bettergetfunction"] = {} 
+    _G["dx9"]["Get"] = function(url)
+        if _G["bettergetfunction"][url] == nil then
+            _G["bettergetfunction"][url] = oldget(url)
+            return _G["bettergetfunction"][url]
+        else
+            return _G["bettergetfunction"][url]
+        end
+    end
+end
+
 --// Boundary Check
 function dxl.isMouseInArea(area)
     if dx9.GetMouse().x > area[1] and dx9.GetMouse().y > area[2] and dx9.GetMouse().x < area[3] and dx9.GetMouse().y < area[4] then
