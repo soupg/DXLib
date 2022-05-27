@@ -1,6 +1,6 @@
 --// DXLib //--
 
---// Initiating Libraryprint
+--// Initiating Library
 if _G.dxl == nil then
     _G.dxl = {
         --// Console Vars
