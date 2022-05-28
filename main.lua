@@ -59,6 +59,16 @@ function dxl.DistanceFromPlayer(v)
 end
 
 
+--// Game
+function dxl.game(...)
+    local a = dx9.GetDatamodel()
+    for c, d in pairs({...}) do
+        a = dx9.FindFirstChild(a, d)
+    end
+    return a
+end
+
+
 --// Get Descendants
 function dxl.GetDescendants(instance)
     local children = {}
@@ -72,11 +82,12 @@ function dxl.GetDescendants(instance)
 end
 
 
+
 --// Get Closest Part
 function dxl.GetClosestBodyPart(target)
     local closest_part
     local valid_classes = {
-        Part = true
+        Part = true;
         MeshPart = true;
         Accessory = true;
         TrussPart = true;
