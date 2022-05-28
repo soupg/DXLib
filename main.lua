@@ -90,6 +90,7 @@ end
 --// Better Loadstring
 function dxl.loadstring(string)
     if dxl.LoadstringCaching[string] == nil then
+        print(dxl.OldLoadstring(string))
         dxl.LoadstringCaching[string] = dxl.OldLoadstring(string)
     else
         return dxl.LoadstringCaching[string]
@@ -101,6 +102,7 @@ _G.loadstring = dxl.loadstring
 --// Better Get
 function dxl.Get(string)
     if dxl.GetCaching[string] == nil then
+        print(dxl.OldGet(string))
         dxl.GetCaching[string] = dxl.OldGet(string)
     else
         return dxl.GetCaching[string]
@@ -109,8 +111,11 @@ end
 _G.dx9.Get = dxl.Get
 
 
+
+
 --// Better Console
 function dxl.ShowConsole()
+    print("asdasdasdasd")
     if dxl.isMouseInArea({dxl.Location[1] + dxl.Size[1] - 27, dxl.Location[2] + 3, dxl.Location[1] + dxl.Size[1] - 5, dxl.Location[2] + 19}) then
         if dx9.isLeftClick() then
             dxl.Open = not dxl.Open;
@@ -464,4 +469,3 @@ end
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
