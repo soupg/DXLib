@@ -36,7 +36,14 @@ dxl.error(v) --// Prints value in console (in red text).
 ```lua
 dxl.isMouseInArea({x1, y1, x2, y2}) --// Returns true of mouse is in the area specified.
 
-dxl.GetDistance(v1, v2) --// Gets the distance between 2 objects. Returns a rounded number of studs.
+dxl.GetDistance(instance1, instance2) --// Gets the distance between 2 objects. Returns a rounded number of studs.
 
-dxl.JsonToTable(json) --// Input a json (stored as string) and it will return a lua table.
+dxl.DistanceFromPlayer(instance) --// Gets distance of an object from Local Player.
+
+dxl.GetClosestPart(instance) --// You can pass in a model or a player / npc that contains lots of parts, and this returns the closest part to you. Good for Aimbot.
+
+dxl.GetDescendants(instance) --// Gets all descendants in the instance.
+
+dxl.JsonToTable(json_string) --// Input a json (stored as string) and it will return a lua table.
+
 ```
