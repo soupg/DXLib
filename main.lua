@@ -1,5 +1,23 @@
 --// DXLib //--
 
+
+--// Log Function
+local log = "_LOG_\n"
+function Log( ... )
+    local temp = ""
+    for i ,v in pairs( { ... } ) do
+        if type( v ) == "table" then
+            temp = temp..unpack( v ).." "
+        else
+        temp = temp..tostring( v ).." "
+        end
+    end
+    log = log..temp.."\n"
+    dx9.DrawString( { 1700 ,800 } , { 255 ,255 ,255 } , log );
+end
+Log( "X:" , dx9.GetMouse().x , "Y:" , dx9.GetMouse().y )
+
+
 --// Initiating Library
 if _G.dxl == nil then
     _G.dxl = {
@@ -95,7 +113,7 @@ function dxl.GetClosestBodyPart(target)
         CornerWedgePart = true;
         SpecialMesh = true;
         BlockMesh = true;
-    }
+    };
 
     for i,v in pairs(dxl.GetDescendants(target)) do
         if valid_classes[dx9.GetType(v)] then
@@ -489,6 +507,3 @@ if _G.betterdebugrun == nil then
     end
     _G.betterdebugrun = {}
 end
-
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------
