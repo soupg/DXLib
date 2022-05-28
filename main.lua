@@ -34,22 +34,6 @@ end
 
 --// Boundary Check
 function dxl.isMouseInArea(area)
-    if type(area) ~= "table" then
-        dxl.error("[DXL Error] ".."isMouseInArea"..": This function takes a table with 4 numbers as input! Ex: {x1, y1, x2, y2} " .. "\n" .. debug.traceback() .. "\n") 
-        return
-    end
-
-    if area[4] == nil or area[5] ~= nil then
-        dxl.error("[DXL Error] ".."isMouseInArea"..": This function takes a table with 4 numbers as input! Ex: {x1, y1, x2, y2} " .. "\n" .. debug.traceback() .. "\n") 
-        return
-    end
-
-    if type(area[1] + area[2] + area[3] + area[4]) == "integer" then
-    else
-        dxl.error("[DXL Error] ".."isMouseInArea"..": This function takes a table with 4 numbers as input! Ex: {x1, y1, x2, y2} " .. "\n" .. debug.traceback() .. "\n") 
-        return
-    end
-
     if dx9.GetMouse().x > area[1] and dx9.GetMouse().y > area[2] and dx9.GetMouse().x < area[3] and dx9.GetMouse().y < area[4] then
         return true
     else
@@ -59,21 +43,9 @@ end
 
 
 --// Get Distance
-function dxl.GetDistance(v1, v2)
-    if dx9.GetPosition(v1) then
-        local v1 = dx9.GetPosition(v1)
-    else 
-        dxl.error("[DXL Error] ".."GetDistance"..": First Argument needs to have a position value!" .. "\n" .. debug.traceback() .. "\n") 
-        return 
-    end
-
-    if dx9.GetPosition(v2) then
-        local v2 = dx9.GetPosition(v2)
-    else 
-        dxl.error("[DXL Error] ".."GetDistance"..": Second Argument needs to have a position value!" .. "\n" .. debug.traceback() .. "\n") 
-        return 
-    end
-
+function dxl.GetDistance(v, i)
+    local v1 = dx9.GetPosition(i);
+    local v2 = dx9.GetPosition(v);
     local a = (v1.x-v2.x)*(v1.x-v2.x);
     local b = (v1.y-v2.y)*(v1.y-v2.y);
     local c = (v1.z-v2.z)*(v1.z-v2.z);
@@ -90,7 +62,6 @@ end
 --// Better Loadstring
 function dxl.loadstring(string)
     if dxl.LoadstringCaching[string] == nil then
-        print(dxl.OldLoadstring(string))
         dxl.LoadstringCaching[string] = dxl.OldLoadstring(string)
     else
         return dxl.LoadstringCaching[string]
@@ -102,7 +73,6 @@ _G.loadstring = dxl.loadstring
 --// Better Get
 function dxl.Get(string)
     if dxl.GetCaching[string] == nil then
-        print(dxl.OldGet(string))
         dxl.GetCaching[string] = dxl.OldGet(string)
     else
         return dxl.GetCaching[string]
@@ -111,11 +81,8 @@ end
 _G.dx9.Get = dxl.Get
 
 
-
-
 --// Better Console
 function dxl.ShowConsole()
-    print("asdasdasdasd")
     if dxl.isMouseInArea({dxl.Location[1] + dxl.Size[1] - 27, dxl.Location[2] + 3, dxl.Location[1] + dxl.Size[1] - 5, dxl.Location[2] + 19}) then
         if dx9.isLeftClick() then
             dxl.Open = not dxl.Open;
@@ -266,11 +233,11 @@ if _G.betterdebugrun == nil then
         _G["dx9"][v] = function(...)
             local args = {...}
             if type(args[1]) ~= "number" then
-                dxl.error("[DX9 Error] "..v..": First Argument needs to be a number! (Instance)" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": First Argument needs to be a number! (Instance)" .. "\n" .. debug.traceback() .. "\n")
             return
             end
             if type(args[2]) ~= "string" then
-                dxl.error("[DX9 Error] "..v..": Second Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": Second Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
             return old(...)
@@ -290,8 +257,8 @@ if _G.betterdebugrun == nil then
             local args = {...}
             if type(args[1]) ~= "number" then
                 local messagethign = custommessages[v] or ": First Argument needs to be a number (Instance)!"
-                dxl.error("[DX9 Error] "..v..messagethign .. "\n" .. debug.traceback() .. "\n")
-                return
+                dxl.error("[Error] "..v..messagethign .. "\n" .. debug.traceback() .. "\n")
+            return
             end
             return old(...)
         end
@@ -301,11 +268,11 @@ if _G.betterdebugrun == nil then
     _G["dx9"]["Teleport"] = function(...)
         local args = {...}
         if type(args[1]) ~= "number" then
-            dxl.error("[DX9 Error] ".."Teleport"..": First Argument needs to be a number! (Instance)" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] ".."Teleport"..": First Argument needs to be a number! (Instance)" .. "\n" .. debug.traceback() .. "\n")
         return
         end
         if type(args[2]) ~= "table" then
-            dxl.error("[DX9 Error] ".."Teleport"..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] ".."Teleport"..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         return old(...)
@@ -315,11 +282,11 @@ if _G.betterdebugrun == nil then
     _G["dx9"]["SetAimbotValue"] = function(...)
         local args = {...}
         if type(args[1]) ~= "string" then
-            dxl.error("[DX9 Error] ".."SetAimbotValue"..": First Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] ".."SetAimbotValue"..": First Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
         return
         end
         if type(args[2]) ~= "number" then
-            dxl.error("[DX9 Error] ".."SetAimbotValue"..": Second Argument needs to be a Number!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] ".."SetAimbotValue"..": Second Argument needs to be a Number!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         return old(...)
@@ -329,11 +296,11 @@ if _G.betterdebugrun == nil then
     _G["dx9"]["get_info"] = function(...)
         local args = {...}
         if type(args[1]) ~= "string" then
-            dxl.error("[DX9 Error] ".."get_info"..": First Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] ".."get_info"..": First Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
         return
         end
         if type(args[2]) ~= "string" then
-            dxl.error("[DX9 Error] ".."get_info"..": Second Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] ".."get_info"..": Second Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         return old(...)
@@ -343,7 +310,7 @@ if _G.betterdebugrun == nil then
     _G["dx9"]["get_player"] = function(...)
         local args = {...}
         if type(args[1]) ~= "string" then
-            dxl.error("[DX9 Error] ".."get_player"..": First Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] ".."get_player"..": First Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
         return
         end
         return old(...)
@@ -354,15 +321,15 @@ if _G.betterdebugrun == nil then
         _G["dx9"][v] = function(...)
             local args = {...}
             if type(args[1]) ~= "table" then
-                dxl.error("[DX9 Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
             if type(args[2]) ~= "number" then
-                dxl.error("[DX9 Error] "..v..": Second Argument needs to be a number!" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": Second Argument needs to be a number!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
             if type(args[3]) ~= "number" then
-                dxl.error("[DX9 Error] "..v..": Third Argument needs to be a number!" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": Third Argument needs to be a number!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
             return old(...)
@@ -374,15 +341,15 @@ if _G.betterdebugrun == nil then
         _G["dx9"][v] = function(...)
             local args = {...}
             if type(args[1]) ~= "table" then
-                dxl.error("[DX9 Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
             if type(args[2]) ~= "table" then
-                dxl.error("[DX9 Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
             if type(args[3]) ~= "table" then
-                dxl.error("[DX9 Error] "..v..": Third Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+                dxl.error("[Error] "..v..": Third Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
             return old(...)
@@ -394,15 +361,15 @@ if _G.betterdebugrun == nil then
         local args = {...}
         local v = "DrawCircle"
         if type(args[1]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[2]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[3]) ~= "number" then
-            dxl.error("[DX9 Error] "..v..": Third Argument needs to be a number!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Third Argument needs to be a number!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         return old(...)
@@ -413,15 +380,15 @@ if _G.betterdebugrun == nil then
         local args = {...}
         local v = "DrawString"
         if type(args[1]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[2]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[3]) ~= "string" then
-            dxl.error("[DX9 Error] "..v..": Third Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Third Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         return old(...)
@@ -432,23 +399,23 @@ if _G.betterdebugrun == nil then
         local args = {...}
         local v = "Box3d"
         if type(args[1]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[2]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Second Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[3]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": Third Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Third Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[4]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": Fourth Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Fourth Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         if type(args[5]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": Fifth Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": Fifth Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         return old(...)
@@ -459,7 +426,7 @@ if _G.betterdebugrun == nil then
         local args = {...}
         local v = "WorldToScreen"
         if type(args[1]) ~= "table" then
-            dxl.error("[DX9 Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
+            dxl.error("[Error] "..v..": First Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
         return old(...)
