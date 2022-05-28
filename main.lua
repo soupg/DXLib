@@ -53,6 +53,51 @@ function dxl.GetDistance(v, i)
 end
 
 
+--// Get Distance From Player
+function dxl.DistanceFromPlayer(v)
+    dxl.GetDistance(v, dx9.get_localplayer().Position)
+end
+
+
+--// Get Descendants
+function dxl.GetDescendants(instance)
+    local children = {}
+    for _, child in ipairs(dx9.GetChildren(instance)) do
+        table.insert(children, instance)
+        if #dx9.GetChildren(child) > 0 then
+            table.insert(children, dxl.GetDescendants(child))
+        end
+    end
+    return children
+end
+
+
+--// Get Closest Part
+function dxl.GetClosestBodyPart(target)
+    local closest_part
+    local valid_classes = {
+        Part = true
+        MeshPart = true;
+        Accessory = true;
+        TrussPart = true;
+        WedgePart = true;
+        CornerWedgePart = true;
+        SpecialMesh = true;
+        BlockMesh = true;
+    }
+
+    for i,v in pairs(dxl.GetDescendants(target)) do
+        if valid_classes[dx9.GetType(v)] then
+            if dxl.DistanceFromPlayer(v) < dxl.DistanceFromPlayer(closest_part) then
+                closest_part = v;
+            end
+        end
+    end
+    return closest_part;
+end
+
+
+
 --// Json To Table
 function dxl.JsonToTable(json)
     return loadstring("return "..json:gsub('("[^"]-"):','[%1]='))()
