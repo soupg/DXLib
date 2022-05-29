@@ -103,6 +103,17 @@ function dxl.GetDescendants(instance)
     return children
 end
 
+--// Get Descendants of Class
+function dxl.GetDescendantsOfClass(instance, class)
+    local children = {}
+    for i,v in pairs(dxl.GetDescendants(instance)) do
+        if dx9.GetClassName(v) == class then
+            table.insert(children, v)
+        end
+    end
+    return children
+end
+
 
 
 --// Get Closest Part
