@@ -86,6 +86,10 @@ function dxl.game(...)
     return a
 end
 
+--// Get Local Player Name
+function dxl.localplayername()
+    return dx9.get_localplayer().Info.Name
+end
 
 --// Get Descendants
 function dxl.GetDescendants(instance)
