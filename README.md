@@ -44,6 +44,8 @@ dxl.GetClosestPart(instance) --// You can pass in a model or a player / npc that
 
 dxl.GetDescendants(instance) --// Gets all descendants in the instance.
 
+dxl.GetDescendantsOfClass(instance, class) --// Gets all descendants (of a class) in the instance. For example, if you made class var be a part, it only returns descendants that are parts.
+
 dxl.JsonToTable(json_string) --// Input a json (stored as string) and it will return a lua table.
 
 ```
