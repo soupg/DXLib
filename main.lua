@@ -114,7 +114,16 @@ function dxl.GetDescendantsOfClass(instance, class)
     return children
 end
 
-
+--// Is near mouse
+function dxl.IsNearMouse(instance,factor)
+    local mouse = dx9.GetMouse()
+    local pos = dx9.GetImageLabelPosition(instance) or dx9.GetPosition(instance)
+    if mouse.x > pos.x - factor and mouse.x < pos.x + factor and mouse.y > pos.y - factor and mouse.y < pos.y + factor then
+        return true
+    else
+        return false
+    end
+end
 
 --// Get Closest Part
 function dxl.GetClosestBodyPart(target)
