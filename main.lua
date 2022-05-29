@@ -103,6 +103,11 @@ function dxl.GetDescendants(instance)
     return children
 end
 
+--// Local Player
+function dxl.localplayer()
+    return dxl.game("Players",dxl.localplayername())
+end
+
 --// Get Descendants of Class
 function dxl.GetDescendantsOfClass(instance, class)
     local children = {}
