@@ -117,7 +117,7 @@ end
 function dxl.GetDescendantsOfClass(instance, class)
     local children = {}
     for i,v in pairs(dxl.GetDescendants(instance)) do
-        if dx9.GetClassName(v) == class then
+        if dx9.GetType(v) == class then
             table.insert(children, v)
         end
     end
