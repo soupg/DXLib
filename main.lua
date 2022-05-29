@@ -97,7 +97,9 @@ function dxl.GetDescendants(instance)
     for _, child in ipairs(dx9.GetChildren(instance)) do
         table.insert(children, instance)
         if #dx9.GetChildren(child) > 0 then
-            table.insert(children, dxl.GetDescendants(child))
+            for i,v in pairs(dxl.GetDescendants(child)) do
+                table.insert(children, v)
+            end
         end
     end
     return children
