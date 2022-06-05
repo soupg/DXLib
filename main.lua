@@ -108,11 +108,31 @@ end
 
 --// Get Distance
 function dxl.GetDistance(v, i)
-    dxl.TypeCheck("GetDistance", "First", v, 69)
-    dxl.TypeCheck("GetDistance", "Second", i, 69)
+    local v1
+    local v2
 
-    local v1 = dx9.GetPosition(i);
-    local v2 = dx9.GetPosition(v);
+    if type(i) == "table" then
+        dxl.TypeCheck("GetDistance", "Second", i, {1,1,1})
+        v1 = i
+    elseif type(i) == "number" then
+        dxl.TypeCheck("GetDistance", "Second", i, 69)
+        v1 = dx9.GetPosition(i);
+    else
+        error("[DXL Error] GetDistance: Second Argument needs to be a table (with position values) or number (instance)!\n".. debug.traceback().."\n")
+        return;
+    end
+
+    if type(v) == "table" then
+        dxl.TypeCheck("GetDistance", "First", v, {1,1,1})
+        v2 = v
+    elseif type(v) == "number" then
+        dxl.TypeCheck("GetDistance", "First", v, 69)
+        v2 = dx9.GetPosition(v);
+    else
+        error("[DXL Error] GetDistance: First Argument needs to be a table (with position values) or number (instance)!\n".. debug.traceback().."\n")
+        return;
+    end
+
     local a = (v1.x-v2.x)*(v1.x-v2.x);
     local b = (v1.y-v2.y)*(v1.y-v2.y);
     local c = (v1.z-v2.z)*(v1.z-v2.z);
