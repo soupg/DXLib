@@ -108,12 +108,18 @@ end
 
 --// Get Distance
 function dxl.GetDistance(v, i)
-    local v1
-    local v2
+    local v1 = {}
+    local v2 = {}
 
     if type(i) == "table" then
-        dxl.TypeCheck("GetDistance", "Second", i, {1,1,1})
-        v1 = i
+        if i['x'] ~= nil and i['y'] ~= nil and i['z'] ~= nil then
+            v1 = i
+        else
+            dxl.TypeCheck("GetDistance", "Second", i, {1,1,1})
+            v1['x'] = i[1]
+            v1['y'] = i[2]
+            v1['z'] = i[3]
+        end
     elseif type(i) == "number" then
         dxl.TypeCheck("GetDistance", "Second", i, 69)
         v1 = dx9.GetPosition(i);
@@ -123,8 +129,14 @@ function dxl.GetDistance(v, i)
     end
 
     if type(v) == "table" then
-        dxl.TypeCheck("GetDistance", "First", v, {1,1,1})
-        v2 = v
+        if v['x'] ~= nil and v['y'] ~= nil and v['z'] ~= nil then
+            v2 = v
+        else
+            dxl.TypeCheck("GetDistance", "First", v, {1,1,1})
+            v2['x'] = v[1]
+            v2['y'] = v[2]
+            v2['z'] = v[3]
+        end
     elseif type(v) == "number" then
         dxl.TypeCheck("GetDistance", "First", v, 69)
         v2 = dx9.GetPosition(v);
@@ -136,16 +148,14 @@ function dxl.GetDistance(v, i)
     local a = (v1.x-v2.x)*(v1.x-v2.x);
     local b = (v1.y-v2.y)*(v1.y-v2.y);
     local c = (v1.z-v2.z)*(v1.z-v2.z);
+
     return math.floor(math.sqrt(a+b+c)+0.5);
 end
 
 
 --// Get Distance From Player
-function dxl.DistanceFromPlayer(v)
-    --// Error Handling
-    dxl.TypeCheck("DistanceFromPlayer", "First", v, 1)
-
-    dxl.GetDistance(v, dx9.get_localplayer().Position)
+function dxl.GetDistanceFromPlayer(v)
+    return dxl.GetDistance(v, dx9.get_localplayer().Position)
 end
 
 
