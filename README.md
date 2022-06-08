@@ -38,7 +38,7 @@ dxl.isMouseInArea({x1, y1, x2, y2}) --// Returns true of mouse is in the area sp
 
 dxl.GetDistance(instance1, instance2) --// Gets the distance between 2 objects. Returns a rounded number of studs.
 
-dxl.DistanceFromPlayer(instance) --// Gets distance of an object from Local Player.
+dxl.GetDistanceFromPlayer(instance) --// Gets distance of an object from Local Player.
 
 dxl.GetClosestPart(instance) --// You can pass in a model or a player / npc that contains lots of parts, and this returns the closest part to you. Good for Aimbot.
 
