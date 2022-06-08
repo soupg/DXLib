@@ -264,12 +264,12 @@ end
 
 --// Local Player
 function dxl.GetLocalPLayer()
-    return dxl.Game("Players",dxl.localplayername())
+    return dxl.Game("Players", dxl.GetLocalPlayerName())
 end
 
 --// PlayerGui of Local Player
 function dxl.GetLocalPlayerGUI()
-    return dxl.Game("Players",dxl.localplayername(),"PlayerGui")
+    return dxl.Game("Players", dxl.GetLocalPlayerName(),"PlayerGui")
 end
 
 --// Get Descendants of Class
@@ -312,6 +312,26 @@ function dxl.GetClosestPart(target)
     return closest_part;
 end
 
+
+--// Get Character
+function dxl.GetCharacter(var) 
+    local name
+
+    if type(var) == "number" and dx9.GetName(var) ~= nil then 
+        name = dx9.GetName(var) 
+    else 
+        dxl.TypeCheck("GetCharacter", "First", var, "string!")
+        name = var 
+    end
+
+    for i,v in pairs(dxl.GetDescendants(dxl.Game("Workspace"))) do
+        if dx9.GetName(v) == name and dx9.GetType(v) == "Model" then
+            return v
+        end
+    end
+
+    return 0
+end
 
 
 --// Json To Table
@@ -449,94 +469,10 @@ function dxl.ShowConsole(useless_variable_used_to_hook_dx9_show_console_function
         end
     end
 
-    function print_table(node) -- https://stackoverflow.com/a/42062321/19113503
-        local cache, stack, output = {},{},{}
-        local depth = 1
-        local output_str = "{\n"
-    
-        while true do
-            local size = 0
-            for k,v in pairs(node) do
-                size = size + 1
-            end
-    
-            local cur_index = 1
-            for k,v in pairs(node) do
-                if (cache[node] == nil) or (cur_index >= cache[node]) then
-    
-                    if (string.find(output_str,"}",output_str:len())) then
-                        output_str = output_str .. ",\n"
-                    elseif not (string.find(output_str,"\n",output_str:len())) then
-                        output_str = output_str .. "\n"
-                    end
-    
-                    -- This is necessary for working with HUGE tables otherwise we run out of memory using concat on huge strings
-                    table.insert(output,output_str)
-                    output_str = ""
-    
-                    local key
-                    if (type(k) == "number" or type(k) == "boolean") then
-                        key = "["..tostring(k).."]"
-                    else
-                        key = "['"..tostring(k).."']"
-                    end
-    
-                    if (type(v) == "number" or type(v) == "boolean") then
-                        output_str = output_str .. string.rep('\t',depth) .. key .. " = "..tostring(v)
-                    elseif (type(v) == "table") then
-                        output_str = output_str .. string.rep('\t',depth) .. key .. " = {\n"
-                        table.insert(stack,node)
-                        table.insert(stack,v)
-                        cache[node] = cur_index+1
-                        break
-                    else
-                        output_str = output_str .. string.rep('\t',depth) .. key .. " = '"..tostring(v).."'"
-                    end
-    
-                    if (cur_index == size) then
-                        output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
-                    else
-                        output_str = output_str .. ","
-                    end
-                else
-                    -- close the table
-                    if (cur_index == size) then
-                        output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
-                    end
-                end
-    
-                cur_index = cur_index + 1
-            end
-    
-            if (size == 0) then
-                output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
-            end
-    
-            if (#stack > 0) then
-                node = stack[#stack]
-                stack[#stack] = nil
-                depth = cache[node] == nil and depth + 1 or depth - 1
-            else
-                break
-            end
-        end
-    
-        -- This is necessary for working with HUGE tables otherwise we run out of memory using concat on huge strings
-        table.insert(output,output_str)
-        output_str = table.concat(output)
-    
-        return output_str
-    end
-
-    
     function dxl.print(...)
         local temp = "";
         for i,v in pairs({...}) do
-            if type(v) == "table" then
-                temp = temp..print_table(v).." "
-            else
-                temp = temp..tostring(v).." "
-            end
+            temp = temp..tostring(v).." "
         end
         
         local split_string = {};
@@ -578,9 +514,9 @@ end
 
 --// Supg's attempt at making print() actually print as well as output to dxLib console (wish me luck)
 
-function double_print(...)
-    dxl.OldPrint(...);
-    dxl.print(...);
+function double_print(sussy_variable)
+    dxl.OldPrint(sussy_variable);
+    dxl.print(sussy_variable);
 end
 _G.print = double_print
 _G.error = dxl.error
