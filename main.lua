@@ -241,17 +241,8 @@ function dxl.Game(...)
     return a
 end
 
-function dxl.game(...)
-    local a = dx9.GetDatamodel()
-    for c, d in pairs({...}) do
-        a = dx9.FindFirstChild(a, d)
-    end
-    return a
-end
-
-
 --// Get Local Player Name
-function dxl.localplayername()
+function dxl.GetLocalPlayerName()
     return dx9.get_localplayer().Info.Name
 end
 
@@ -272,13 +263,13 @@ function dxl.GetDescendants(instance)
 end
 
 --// Local Player
-function dxl.localplayer()
-    return dxl.game("Players",dxl.localplayername())
+function dxl.GetLocalPLayer()
+    return dxl.Game("Players",dxl.localplayername())
 end
 
 --// PlayerGui of Local Player
-function dxl.localplayergui()
-    return dxl.game("Players",dxl.localplayername(),"PlayerGui")
+function dxl.GetLocalPlayerGUI()
+    return dxl.Game("Players",dxl.localplayername(),"PlayerGui")
 end
 
 --// Get Descendants of Class
@@ -296,8 +287,8 @@ function dxl.GetDescendantsOfClass(instance, class)
 end
 
 --// Get Closest Part
-function dxl.GetClosestBodyPart(target)
-    dxl.TypeCheck("GetClosestBodyPart", "First", target, {}) --// Tuple check is empty because the target may have an unknown amount of values in the tuple, thus im only checking IF its a tuple.
+function dxl.GetClosestPart(target)
+    dxl.TypeCheck("GetClosestPart", "First", target, {}) --// Tuple check is empty because the target may have an unknown amount of values in the tuple, thus im only checking IF its a tuple.
 
     local closest_part
     local valid_classes = {
