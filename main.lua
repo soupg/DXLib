@@ -92,7 +92,10 @@ function dxl.TypeCheck(function_name, argument_number, v, t)
 end
     
 
-
+--// Big numr
+function dxl.Huge()
+    return 99999999999999999999
+end
 
 --// Boundary Check
 function dxl.isMouseInArea(area)
