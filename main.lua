@@ -170,6 +170,7 @@ function dxl.HealthBar(params)
 
     local scale = params.Scale or false
 
+    local offset = params.Offset or {0,0}
     --// Error Handling
     local pos = {}
 
@@ -202,8 +203,10 @@ function dxl.HealthBar(params)
 
         --// A lot of math stuff, dont mess with it unless u know what ur doing
         local temp = ((size_x - 2) / ( maxhp/math.max(0, math.min(maxhp, hp))));
-        dx9.DrawFilledBox({x - (size_x/2), y}, {x + (size_x/2), y - size_y}, {0,0,0});
-        dx9.DrawFilledBox({x - ((size_x/2) - 1), y - 1}, {x - ((size_x/2) - 1) + temp, y - (size_y - 1)},            {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0});
+
+        dx9.DrawFilledBox({x - (size_x/2) + offset[1], y + offset[2]}, {x + (size_x/2) + offset[1], y - size_y + offset[2]}, {0,0,0});
+        dx9.DrawFilledBox({x - ((size_x/2) - 1) + offset[1], y - 1 + offset[2]}, {x - ((size_x/2) - 1) + temp + offset[1], y - (size_y - 1) + offset[2]},   {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0});
+
     else
         size_x = size_x / 10
         size_y = size_y / 10
