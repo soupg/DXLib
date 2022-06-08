@@ -17,6 +17,6 @@ loadstring(dx9.Get("https://raw.githubusercontent.com/soupg/DXLib/main/main.lua"
 
 ---
 
-# [Docs](https://supg.gitbook.io/dxlib/){:target="\_blank"}
+# <a href="https://supg.gitbook.io/dxlib/" target="_blank">Docs</a>
 
-For functions and additional info, please visit our [docs](https://supg.gitbook.io/dxlib/){:target="\_blank"}
+For functions and additional info, please visit our <a href="https://supg.gitbook.io/dxlib/" target="_blank">docs</a>
