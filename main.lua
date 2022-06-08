@@ -94,7 +94,7 @@ end
 
 --// Big numr
 function dxl.Huge()
-    return 99999999999999999999
+    return 999999999999999
 end
 
 --// Boundary Check
@@ -231,7 +231,16 @@ end
 --// Box Esp !!
 -- not don yet
 
+
 --// Game
+function dxl.Game(...)
+    local a = dx9.GetDatamodel()
+    for c, d in pairs({...}) do
+        a = dx9.FindFirstChild(a, d)
+    end
+    return a
+end
+
 function dxl.game(...)
     local a = dx9.GetDatamodel()
     for c, d in pairs({...}) do
@@ -239,6 +248,7 @@ function dxl.game(...)
     end
     return a
 end
+
 
 --// Get Local Player Name
 function dxl.localplayername()
