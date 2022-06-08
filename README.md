@@ -36,11 +36,11 @@ dxl.error(v) --// Prints value in console (in red text).
 ```lua
 dxl.isMouseInArea({x1, y1, x2, y2}) --// Returns true of mouse is in the area specified.
 
-dxl.GetDistance(instance1, instance2) --// Gets the distance between 2 objects. Returns a rounded number of studs.
+dxl.GetDistance({x1, y1, z1}, {x2, y2, z2}) --// Gets the distance between 2 objects. Returns a rounded number of studs.
 
-dxl.GetDistanceFromPlayer(instance) --// Gets distance of an object from Local Player.
+dxl.GetDistanceFromPlayer({x, y, z}) --// Gets distance of an object from Local Player.
 
-dxl.GetClosestPart(instance) --// You can pass in a model or a player / npc that contains lots of parts, and this returns the closest part to you. Good for Aimbot.
+dxl.GetClosestPart(model_instance) --// You can pass in a model or a player / npc that contains lots of parts, and this returns the closest part to you. Good for Aimbot.
 
 dxl.GetDescendants(instance) --// Gets all descendants in the instance.
 
@@ -49,12 +49,20 @@ dxl.GetDescendantsOfClass(instance, class) --// Gets all descendants (of a class
 dxl.JsonToTable(json_string) --// Input a json (stored as string) and it will return a lua table.
 
 dxl.Huge() --// Returns a huge number (99999999999999999999)
+
+dxl.Game(path) --// Navigates within the game instance | Example: dxl.Game("Workspace", "PlayerFolder", "PlayerName")
+
+dxl.GetLocalPlayerName() --// Returns LocalPlayer name
+
+dxl.GetLocalPLayer() --// Gets LocalPlayer path
+
+dxl.GetLocalPlayerGUI() --// Gets LocalPlayer GUI
 ```
 
 ### GUI Functions (graphic stuff)
 
 ```lua
-dxl.HealthBar({Location = {x, y}, Size = {x, y}, HP = hp_number, MaxHP = max_hp_number}) --// Make sure youre inputting everything that's shown. Only replace the lowercase placeholder vars!
+dxl.HealthBar({Location = {x, y}, Size = {x, y}, HP = hp_number, MaxHP = max_hp_number, Offset = {0, 0}}) --// Make sure youre inputting everything that's shown. Only replace the lowercase placeholder vars!
 
 
 ```
