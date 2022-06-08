@@ -263,7 +263,7 @@ function dxl.GetDescendants(instance)
 end
 
 --// Local Player
-function dxl.GetLocalPLayer()
+function dxl.GetLocalPlayer()
     return dxl.Game("Players", dxl.GetLocalPlayerName())
 end
 
@@ -731,3 +731,6 @@ if _G.betterdebugrun == nil then
     end
     _G.betterdebugrun = {}
 end
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
