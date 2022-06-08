@@ -48,13 +48,11 @@ dxl.GetDescendantsOfClass(instance, class) --// Gets all descendants (of a class
 
 dxl.JsonToTable(json_string) --// Input a json (stored as string) and it will return a lua table.
 
-dxl.Huge() --// Returns a huge number (99999999999999999999)
-
 dxl.Game(path) --// Navigates within the game instance | Example: dxl.Game("Workspace", "PlayerFolder", "PlayerName")
 
 dxl.GetLocalPlayerName() --// Returns LocalPlayer name
 
-dxl.GetLocalPLayer() --// Gets LocalPlayer path
+dxl.GetLocalPlayer() --// Gets LocalPlayer path
 
 dxl.GetLocalPlayerGUI() --// Gets LocalPlayer GUI
 ```
