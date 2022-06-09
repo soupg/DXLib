@@ -363,7 +363,7 @@ end
 
 --// Get Local Character
 function dxl.GetLocalCharacter()
-    return dxl.GetCharacter(dxl.GetLocalPLayer())
+    return dxl.GetCharacter(dxl.GetLocalPlayer())
 end
 
 
