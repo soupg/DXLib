@@ -1,28 +1,12 @@
 --// DXLib //--
 
+
 --// Presets for supg's smol brain to rember
 local Game = dx9.GetDatamodel();
 local Workspace = dx9.FindFirstChild(Game,"Workspace");
 local Mouse = dx9.GetMouse();
 local LocalPlayer = dx9.get_localplayer();
 local Players = dx9.get_players();
-
-
---// Log Function
-local log = "_LOG_\n"
-function Log( ... )
-    local temp = ""
-    for i ,v in pairs( { ... } ) do
-        if type( v ) == "table" then
-            temp = temp..unpack( v ).." "
-        else
-        temp = temp..tostring( v ).." "
-        end
-    end
-    log = log..temp.."\n"
-    dx9.DrawString( { 1700 ,800 } , { 255 ,255 ,255 } , log );
-end
-Log( "X:" , dx9.GetMouse().x , "Y:" , dx9.GetMouse().y )
 
 
 --// Initiating Library
@@ -60,7 +44,15 @@ if _G.dxl == nil then
 end
 
 
---// Type check (used for error handling, not a dxlib function)
+--[[
+████████╗██╗   ██╗██████╗ ███████╗     ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗
+╚══██╔══╝╚██╗ ██╔╝██╔══██╗██╔════╝    ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝
+   ██║    ╚████╔╝ ██████╔╝█████╗      ██║     ███████║█████╗  ██║     █████╔╝ 
+   ██║     ╚██╔╝  ██╔═══╝ ██╔══╝      ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗ 
+   ██║      ██║   ██║     ███████╗    ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗
+   ╚═╝      ╚═╝   ╚═╝     ╚══════╝     ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝
+]]
+
 function dxl.TypeCheck(function_name, argument_number, v, t)
     if type(t) == "table" then
         if type(v) ~= "table" then 
@@ -90,14 +82,17 @@ function dxl.TypeCheck(function_name, argument_number, v, t)
         end
     end
 end
-    
 
---// Big numr
-function dxl.Huge()
-    return 999999999999999
-end
 
---// Boundary Check
+--[[
+██████╗  ██████╗ ██╗   ██╗███╗   ██╗██████╗  █████╗ ██████╗ ██╗   ██╗     ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗
+██╔══██╗██╔═══██╗██║   ██║████╗  ██║██╔══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝    ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝
+██████╔╝██║   ██║██║   ██║██╔██╗ ██║██║  ██║███████║██████╔╝ ╚████╔╝     ██║     ███████║█████╗  ██║     █████╔╝ 
+██╔══██╗██║   ██║██║   ██║██║╚██╗██║██║  ██║██╔══██║██╔══██╗  ╚██╔╝      ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗ 
+██████╔╝╚██████╔╝╚██████╔╝██║ ╚████║██████╔╝██║  ██║██║  ██║   ██║       ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝        ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝
+]]
+
 function dxl.isMouseInArea(area)
     dxl.TypeCheck("isMouseInArea", "First", area, {1, 1, 1, 1})
 
@@ -109,7 +104,15 @@ function dxl.isMouseInArea(area)
 end
 
 
---// Get Distance
+--[[
+ ██████╗ ███████╗████████╗    ██████╗ ██╗███████╗████████╗ █████╗ ███╗   ██╗ ██████╗███████╗
+██╔════╝ ██╔════╝╚══██╔══╝    ██╔══██╗██║██╔════╝╚══██╔══╝██╔══██╗████╗  ██║██╔════╝██╔════╝
+██║  ███╗█████╗     ██║       ██║  ██║██║███████╗   ██║   ███████║██╔██╗ ██║██║     █████╗  
+██║   ██║██╔══╝     ██║       ██║  ██║██║╚════██║   ██║   ██╔══██║██║╚██╗██║██║     ██╔══╝  
+╚██████╔╝███████╗   ██║       ██████╔╝██║███████║   ██║   ██║  ██║██║ ╚████║╚██████╗███████╗
+ ╚═════╝ ╚══════╝   ╚═╝       ╚═════╝ ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚══════╝
+]]
+
 function dxl.GetDistance(v, i)
     local v1 = {}
     local v2 = {}
@@ -162,7 +165,16 @@ function dxl.GetDistanceFromPlayer(v)
 end
 
 
---// Healthbar | x, y, hp, maxhp | {TargetPosition = {x, y, z}, Size = {x, y}, HP = hp, MaxHP = max_hp, Scale = true}
+--[[
+██╗  ██╗███████╗ █████╗ ██╗  ████████╗██╗  ██╗██████╗  █████╗ ██████╗ 
+██║  ██║██╔════╝██╔══██╗██║  ╚══██╔══╝██║  ██║██╔══██╗██╔══██╗██╔══██╗
+███████║█████╗  ███████║██║     ██║   ███████║██████╔╝███████║██████╔╝
+██╔══██║██╔══╝  ██╔══██║██║     ██║   ██╔══██║██╔══██╗██╔══██║██╔══██╗
+██║  ██║███████╗██║  ██║███████╗██║   ██║  ██║██████╔╝██║  ██║██║  ██║
+╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+{TargetPosition = {x, y, z}, Size = {x, y}, HP = hp, MaxHP = max_hp, Scale = false, Offset = {x, y}}
+]]
+
 function dxl.HealthBar(params)
     --// Variable Insurance
     local size = params.Size or {120, 5}
@@ -228,22 +240,21 @@ function dxl.HealthBar(params)
 end
 
 
---// Box Esp !!
--- not don yet
+--[[
+ ██████╗  █████╗ ███╗   ███╗███████╗    ███████╗██╗   ██╗███╗   ██╗ ██████╗███████╗
+██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔════╝██║   ██║████╗  ██║██╔════╝██╔════╝
+██║  ███╗███████║██╔████╔██║█████╗      █████╗  ██║   ██║██╔██╗ ██║██║     ███████╗
+██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ██╔══╝  ██║   ██║██║╚██╗██║██║     ╚════██║
+╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ██║     ╚██████╔╝██║ ╚████║╚██████╗███████║
+ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝    ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚══════╝
+]]
 
-
---// Game
 function dxl.Game(...)
     local a = dx9.GetDatamodel()
     for c, d in pairs({...}) do
         a = dx9.FindFirstChild(a, d)
     end
     return a
-end
-
---// Get Local Player Name
-function dxl.GetLocalPlayerName()
-    return dx9.get_localplayer().Info.Name
 end
 
 
@@ -263,12 +274,69 @@ function dxl.GetDescendants(instance)
     return children
 end
 
---// Local Player
+
+--// Get Descendants of Class
+function dxl.GetDescendantsOfClass(instance, class)
+    dxl.TypeCheck("GetDescendantsOfClass", "First", instance, 69)
+    dxl.TypeCheck("GetDescendantsOfClass", "Second", class, "string!! yay!!")
+
+    local children = {}
+    for i,v in pairs(dxl.GetDescendants(instance)) do
+        if dx9.GetType(v) == class then
+            table.insert(children, v)
+        end
+    end
+    return children
+end
+
+
+--// Get Closest Part
+function dxl.GetClosestPart(target)
+    dxl.TypeCheck("GetClosestPart", "First", target, {}) --// Tuple check is empty because the target may have an unknown amount of values in the tuple, thus im only checking IF its a tuple.
+
+    local closest_part
+    local valid_classes = {
+        Part = true;
+        MeshPart = true;
+        Accessory = true;
+        TrussPart = true;
+        WedgePart = true;
+        CornerWedgePart = true;
+        SpecialMesh = true;
+        BlockMesh = true;
+    };
+
+    for i,v in pairs(dxl.GetDescendants(target)) do
+        if valid_classes[dx9.GetType(v)] then
+            if dxl.GetDistanceFromPlayer(v) < dxl.GetDistanceFromPlayer(closest_part) then
+                closest_part = v;
+            end
+        end
+    end
+    return closest_part;
+end
+
+
+--[[
+██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗     ███████╗██╗   ██╗███╗   ██╗ ██████╗███████╗
+██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗    ██╔════╝██║   ██║████╗  ██║██╔════╝██╔════╝
+██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝    █████╗  ██║   ██║██╔██╗ ██║██║     ███████╗
+██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗    ██╔══╝  ██║   ██║██║╚██╗██║██║     ╚════██║
+██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║    ██║     ╚██████╔╝██║ ╚████║╚██████╗███████║
+╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝    ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚══════╝
+]]
+
+--// Get Local Player Name
+function dxl.GetLocalPlayerName()
+    return dx9.get_localplayer().Info.Name
+end
+
+--// Get Local Player
 function dxl.GetLocalPlayer()
     return dxl.Game("Players", dxl.GetLocalPlayerName())
 end
 
---// PlayerGui of Local Player
+--// Get PlayerGui of Local Player
 function dxl.GetLocalPlayerGUI()
     return dxl.Game("Players", dxl.GetLocalPlayerName(),"PlayerGui")
 end
@@ -298,45 +366,16 @@ function dxl.GetLocalCharacter()
     return dxl.GetCharacter(dxl.GetLocalPLayer())
 end
 
---// Get Descendants of Class
-function dxl.GetDescendantsOfClass(instance, class)
-    dxl.TypeCheck("GetDescendantsOfClass", "First", instance, 69)
-    dxl.TypeCheck("GetDescendantsOfClass", "Second", class, "string!! yay!!")
 
-    local children = {}
-    for i,v in pairs(dxl.GetDescendants(instance)) do
-        if dx9.GetType(v) == class then
-            table.insert(children, v)
-        end
-    end
-    return children
-end
+--[[
+███╗   ███╗██╗███████╗ ██████╗    ███████╗██╗   ██╗███╗   ██╗ ██████╗███████╗
+████╗ ████║██║██╔════╝██╔════╝    ██╔════╝██║   ██║████╗  ██║██╔════╝██╔════╝
+██╔████╔██║██║███████╗██║         █████╗  ██║   ██║██╔██╗ ██║██║     ███████╗
+██║╚██╔╝██║██║╚════██║██║         ██╔══╝  ██║   ██║██║╚██╗██║██║     ╚════██║
+██║ ╚═╝ ██║██║███████║╚██████╗    ██║     ╚██████╔╝██║ ╚████║╚██████╗███████║
+╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝    ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚══════╝
+]]
 
---// Get Closest Part
-function dxl.GetClosestPart(target)
-    dxl.TypeCheck("GetClosestPart", "First", target, {}) --// Tuple check is empty because the target may have an unknown amount of values in the tuple, thus im only checking IF its a tuple.
-
-    local closest_part
-    local valid_classes = {
-        Part = true;
-        MeshPart = true;
-        Accessory = true;
-        TrussPart = true;
-        WedgePart = true;
-        CornerWedgePart = true;
-        SpecialMesh = true;
-        BlockMesh = true;
-    };
-
-    for i,v in pairs(dxl.GetDescendants(target)) do
-        if valid_classes[dx9.GetType(v)] then
-            if dxl.DistanceFromPlayer(v) < dxl.DistanceFromPlayer(closest_part) then
-                closest_part = v;
-            end
-        end
-    end
-    return closest_part;
-end
 
 --// Json To Table
 function dxl.JsonToTable(json)
