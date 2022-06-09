@@ -246,6 +246,7 @@ function dxl.GetLocalPlayerName()
     return dx9.get_localplayer().Info.Name
 end
 
+
 --// Get Descendants
 function dxl.GetDescendants(instance)
     dxl.TypeCheck("GetDescendants", "First", instance, 69)
@@ -270,6 +271,31 @@ end
 --// PlayerGui of Local Player
 function dxl.GetLocalPlayerGUI()
     return dxl.Game("Players", dxl.GetLocalPlayerName(),"PlayerGui")
+end
+
+--// Get Character
+function dxl.GetCharacter(var) 
+    local name
+
+    if type(var) == "number" and dx9.GetName(var) ~= nil then 
+        name = dx9.GetName(var) 
+    else 
+        dxl.TypeCheck("GetCharacter", "First", var, "string!")
+        name = var 
+    end
+
+    for i,v in pairs(dxl.GetDescendants(dxl.Game("Workspace"))) do
+        if dx9.GetName(v) == name and dx9.GetType(v) == "Model" then
+            return v
+        end
+    end
+
+    return 0
+end
+
+--// Get Local Character
+function dxl.GetLocalCharacter()
+    return dxl.GetCharacter(dxl.GetLocalPLayer())
 end
 
 --// Get Descendants of Class
@@ -311,28 +337,6 @@ function dxl.GetClosestPart(target)
     end
     return closest_part;
 end
-
-
---// Get Character
-function dxl.GetCharacter(var) 
-    local name
-
-    if type(var) == "number" and dx9.GetName(var) ~= nil then 
-        name = dx9.GetName(var) 
-    else 
-        dxl.TypeCheck("GetCharacter", "First", var, "string!")
-        name = var 
-    end
-
-    for i,v in pairs(dxl.GetDescendants(dxl.Game("Workspace"))) do
-        if dx9.GetName(v) == name and dx9.GetType(v) == "Model" then
-            return v
-        end
-    end
-
-    return 0
-end
-
 
 --// Json To Table
 function dxl.JsonToTable(json)
@@ -731,6 +735,3 @@ if _G.betterdebugrun == nil then
     end
     _G.betterdebugrun = {}
 end
-
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------------
