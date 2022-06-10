@@ -114,7 +114,6 @@ end
 ]]
 
 function dxl.GetDistance(v, i)
-    print(type(v))
     local v1 = {}
     local v2 = {}
 
@@ -309,7 +308,10 @@ function dxl.GetClosestPart(target)
 
     for i,v in pairs(dxl.GetDescendants(target)) do
         if valid_classes[dx9.GetType(v)] then
-            if dxl.GetDistanceFromPlayer(v) < dxl.GetDistanceFromPlayer(closest_part) then
+		if closest_part == nil then
+			closest_part = v
+		end
+            if dxl.GetDistanceFromPlayer(dx9.GetPosition(v)) < dxl.GetDistanceFromPlayer(dx9.GetPosition(closest_part)) then
                 closest_part = v;
             end
         end
