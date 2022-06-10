@@ -114,6 +114,7 @@ end
 ]]
 
 function dxl.GetDistance(v, i)
+    print(type(v))
     local v1 = {}
     local v2 = {}
 
