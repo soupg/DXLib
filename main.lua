@@ -292,7 +292,7 @@ end
 
 --// Get Closest Part
 function dxl.GetClosestPart(target)
-    dxl.TypeCheck("GetClosestPart", "First", target, {}) --// Tuple check is empty because the target may have an unknown amount of values in the tuple, thus im only checking IF its a tuple.
+    dxl.TypeCheck("GetClosestPart", "First", target, 69) --// Tuple check is empty because the target may have an unknown amount of values in the tuple, thus im only checking IF its a tuple.
 
     local closest_part
     local valid_classes = {
