@@ -12,7 +12,7 @@ local Players = dx9.get_players();
 --// Initiating Library
 if _G.dxl == nil then
     _G.dxl = {
-        --// Console Vars s
+        --// Console Vars
         Location = {1000, 150}; -- Dynamic
         Size = {dx9.size().width / 2.95, dx9.size().height / 1.21}; -- Static
         FontColor = {255,255,255}; -- Static + [Changeable]
