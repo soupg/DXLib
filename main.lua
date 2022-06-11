@@ -1,4 +1,4 @@
---// DXLib //-- bruh
+--// DXLib //--
 
 
 --// Presets for supg's smol brain to rember
