@@ -241,6 +241,30 @@ end
 
 
 --[[
+██████╗ ██████╗     ██████╗  ██████╗ ██╗  ██╗
+╚════██╗██╔══██╗    ██╔══██╗██╔═══██╗╚██╗██╔╝
+ █████╔╝██║  ██║    ██████╔╝██║   ██║ ╚███╔╝ 
+ ╚═══██╗██║  ██║    ██╔══██╗██║   ██║ ██╔██╗ 
+██████╔╝██████╔╝    ██████╔╝╚██████╔╝██╔╝ ██╗
+╚═════╝ ╚═════╝     ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+]]
+
+function dxl.Box3d(bruh1, bruh2, bruh3)
+    if dxl.TypeCheck("Box3d", "First", bruh1, {1, 1, 1}) and dxl.TypeCheck("Box3d", "Second", bruh2, {1, 1, 1}) and dxl.TypeCheck("Box3d", "Third", bruh3, {1, 1, 1}) then
+        local box_color = bruh3
+        local c1 = bruh1 --// 5, 5, 5
+        local c2 = bruh2 --// -5, -5, -5
+        
+        --// Supg did the math below (took me 5 minutes and 47 seconds flat)
+        dx9.DrawBox(c1, {c2[1], c2[2], c1[3]}, box_color)
+        dx9.DrawBox({c2[1], c1[2], c1[3]}, c2, box_color)
+        dx9.DrawBox(c2, {c1[1], c1[2], c2[3]}, box_color)
+        dx9.DrawBox({c1[1], c2[2], c2[3]}, c1, box_color)
+    end
+end
+
+
+--[[
  ██████╗  █████╗ ███╗   ███╗███████╗    ███████╗██╗   ██╗███╗   ██╗ ██████╗███████╗
 ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔════╝██║   ██║████╗  ██║██╔════╝██╔════╝
 ██║  ███╗███████║██╔████╔██║█████╗      █████╗  ██║   ██║██╔██╗ ██║██║     ███████╗
@@ -777,4 +801,3 @@ if _G.betterdebugrun == nil then
     end
     _G.betterdebugrun = {}
 end
-	
