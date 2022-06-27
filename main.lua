@@ -285,8 +285,8 @@ end
 function dxl.Box3d(bruh1, bruh2, bruh3) 
 
     local box_color = bruh3
-    local c1 = bruh1 --// 5, 5, 5
-    local c2 = bruh2 --// -5, -5, -5
+    local c1 = bruh1 --// 5, 5, 5 POSITIVE
+    local c2 = bruh2 --// -5, -5, -5 NEGATIVE
 
     local v1 = dx9.WorldToScreen(c1);
     local v2 = dx9.WorldToScreen(c2);
@@ -297,12 +297,28 @@ function dxl.Box3d(bruh1, bruh2, bruh3)
     local v5 = dx9.WorldToScreen({c1[1], c1[2], c2[3]})
     local v6 = dx9.WorldToScreen({c1[1], c2[2], c2[3]})
 
-    print(v1.x)
+    local v7 = dx9.WorldToScreen({c2[1], c1[2], c2[3]})
+    local v8 = dx9.WorldToScreen({c1[1], c2[2], c1[3]})
+
     --// Supg did the math below (took me 5 minutes and 47 seconds flat)
-    dx9.DrawBox({v1.x, v1.y}, {v3.x, v3.y}, box_color)
-    dx9.DrawBox({v4.x, v4.y}, {v2.x, v2.y}, box_color)
-    dx9.DrawBox({v2.x, v2.y}, {v5.x, v5.y}, box_color)
-    dx9.DrawBox({v6.x, v6.y}, {v1.x, v1.y}, box_color)
+    dx9.DrawLine({v4.x, v4.y}, {v1.x, v1.y}, box_color) -- Top Front
+    dx9.DrawLine({v7.x, v7.y}, {v5.x, v5.y}, box_color) -- Top Back
+
+    dx9.DrawLine({v7.x, v7.y}, {v4.x, v4.y}, box_color) -- Top Left
+    dx9.DrawLine({v5.x, v5.y}, {v1.x, v1.y}, box_color) -- Top Right
+
+    dx9.DrawLine({v3.x, v3.y}, {v8.x, v8.y}, box_color) -- Bottom Front
+    dx9.DrawLine({v2.x, v2.y}, {v6.x, v6.y}, box_color) -- Bottom Back
+
+    dx9.DrawLine({v2.x, v2.y}, {v3.x, v3.y}, box_color) -- Bottom Left
+    dx9.DrawLine({v6.x, v6.y}, {v8.x, v8.y}, box_color) -- Bottom Right {v1.x, v1.y}
+
+    -- here
+    dx9.DrawLine({v1.x, v1.y}, {v8.x, v8.y}, box_color) -- Front Right
+    dx9.DrawLine({v4.x, v4.y}, {v3.x, v3.y}, box_color) -- Front Left
+
+    dx9.DrawLine({v5.x, v5.y}, {v6.x, v6.y}, box_color) -- Back Right
+    dx9.DrawLine({v7.x, v7.y}, {v2.x, v2.y}, box_color) -- Back Left
 end
 
 
@@ -958,10 +974,15 @@ dxl.ShowConsole()
 
 print(Mouse.x, Mouse.y)
 
+local char = dxl.GetLocalCharacter()
 
+local head = dx9.FindFirstChild(char, "Head")
+local leg = dx9.FindFirstChild(char, "HumanoidRootPart")
 
-dx9.DrawCircle({300, 300}, {0,0,0}, 3)
+local headpos = dx9.GetPosition(head)
+local legpos = dx9.GetPosition(leg)
 
-if sleep(3) then
-    dx9.MouseMove({300, 300})
-end
+local headpos = {headpos.x - 1.2, headpos.y + 1, headpos.z - 1.2}
+local legpos = {legpos.x + 1.2, legpos.y - 2.5, legpos.z + 1.2}
+
+dxl.Box3d(headpos, legpos, {255,255,255}) 
