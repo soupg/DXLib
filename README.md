@@ -17,6 +17,4 @@ loadstring(dx9.Get("https://raw.githubusercontent.com/soupg/DXLib/main/main.lua"
 
 ---
 
-# [Docs](https://supg.gitbook.io/dxlib/)
-
-For functions and additional info, please visit our [docs](https://supg.gitbook.io/dxlib/)
+# [DXLib Docs](https://supg.gitbook.io/dxlib/)
