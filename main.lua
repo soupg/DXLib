@@ -7,7 +7,10 @@ local Workspace = dx9.FindFirstChild(Game,"Workspace");
 local Mouse = dx9.GetMouse();
 local LocalPlayer = dx9.get_localplayer();
 local Players = dx9.get_players();
-
+local Screen = {
+    x = dx9.size().width;
+    y = dx9.size().height;
+}
 
 --// Initiating Library
 if _G.dxl == nil then
@@ -40,47 +43,75 @@ if _G.dxl == nil then
 
         OldPrint = print;
         OldError = error;
+
+        --// Sleep
+        Threads = {};
     };
 end
 
 
---[[
-████████╗██╗   ██╗██████╗ ███████╗     ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗
-╚══██╔══╝╚██╗ ██╔╝██╔══██╗██╔════╝    ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝
-   ██║    ╚████╔╝ ██████╔╝█████╗      ██║     ███████║█████╗  ██║     █████╔╝ 
-   ██║     ╚██╔╝  ██╔═══╝ ██╔══╝      ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗ 
-   ██║      ██║   ██║     ███████╗    ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗
-   ╚═╝      ╚═╝   ╚═╝     ╚══════╝     ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝
-]]
+--// Threads (temp)
 
-function dxl.TypeCheck(function_name, argument_number, v, t)
-    if type(t) == "table" then
-        if type(v) ~= "table" then 
-            error("[DXL Error] "..function_name..": "..argument_number.." Argument needs to be a table!\n".. debug.traceback().."\n")
-            return;
-        elseif #t == 0 then
-            return; -- Returns if required length is 0 becase its only checking the passed type, not including length
-        elseif #v ~= #t then
-            error("[DXL Error] "..function_name..": "..argument_number.." Argument needs to contain "..#t.." value(s)!\n".. debug.traceback().."\n")
-            return;
-        end
+local ThreadCount = 0
 
-        for i,c in pairs(v) do
-            if type(c) ~= type(t[i]) then
-                local addon = ""
-                if t[i] == 69 then addon = " (instance)" end
-                error("[DXL Error] "..function_name..": "..argument_number.." Argument (index "..i..") needs to be a "..type(t[i])..addon.."!\n".. debug.traceback().."\n")
-                return;
+function sleep(v, index)
+    ThreadCount = ThreadCount + 1
+
+    assert(type(v) == "number" and v >= 0, "Bruh") --// Change error
+
+    if v == 0 then
+        dxl.Threads[ThreadCount] = nil
+        --ThreadCount = ThreadCount - 1
+        return true 
+    end
+
+    local total_seconds = (os.date("*t").hour * 3600) + (os.date("*t").min * 60) + (os.date("*t").sec)
+
+    if dxl.Threads[ThreadCount] == nil then
+        local largest_end = total_seconds
+
+        if index ~= nil then
+            for i,f in pairs(dxl.Threads) do
+                if f.Index == index then
+                    if f.End > largest_end then
+                        largest_end = f.End
+                    end
+                end
             end
         end
+
+        dxl.Threads[ThreadCount] = {
+            End = largest_end + v;
+            Index = index;
+        }
     else
-        if type(v) ~= type(t) then
-            local addon = ""
-            if t == 69 then addon = " (instance)" end
-            error("[DXL Error] "..function_name..": "..argument_number.." Argument needs to be a "..type(t)..addon.. "!\n" .. debug.traceback() .. "\n")
-            return;
+    
+        if total_seconds >= dxl.Threads[ThreadCount].End then
+            dxl.Threads[ThreadCount] = nil
+            --ThreadCount = ThreadCount - 1
+            return true 
         end
     end
+    return false
+end
+
+
+--[[
+██████╗  █████╗ ███████╗██╗ ██████╗    ███████╗██╗   ██╗███╗   ██╗ ██████╗███████╗
+██╔══██╗██╔══██╗██╔════╝██║██╔════╝    ██╔════╝██║   ██║████╗  ██║██╔════╝██╔════╝
+██████╔╝███████║███████╗██║██║         █████╗  ██║   ██║██╔██╗ ██║██║     ███████╗
+██╔══██╗██╔══██║╚════██║██║██║         ██╔══╝  ██║   ██║██║╚██╗██║██║     ╚════██║
+██████╔╝██║  ██║███████║██║╚██████╗    ██║     ╚██████╔╝██║ ╚████║╚██████╗███████║
+╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝    ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚══════╝
+]]
+
+
+--// Not sure if each screen is a different size (dx9.size) so I'm using this to use % instead of Pixels to click / move to screen coords
+function dxl.GetCoords(wts)
+    assert(type(wts) == "table" and #wts == 2, "[DXL Error] GetCoords: First Argument needs to be a table with 2 values!")
+
+    --// Divides my screen size by my input coords to get %, then turns the % into a screen coord that corisponds with the client's screen size
+    return {(Screen.x / (1920 / wts[1])), (Screen.y / (1017 / wts[2]))} 
 end
 
 
@@ -94,7 +125,7 @@ end
 ]]
 
 function dxl.isMouseInArea(area)
-    dxl.TypeCheck("isMouseInArea", "First", area, {1, 1, 1, 1})
+    assert(type(area) == "table" and #area == 4, "[DXL Error] isMouseInArea: First Argument needs to be a table with 4 values!")
 
     if dx9.GetMouse().x > area[1] and dx9.GetMouse().y > area[2] and dx9.GetMouse().x < area[3] and dx9.GetMouse().y < area[4] then
         return true
@@ -121,13 +152,13 @@ function dxl.GetDistance(v, i)
         if i['x'] ~= nil and i['y'] ~= nil and i['z'] ~= nil then
             v1 = i
         else
-            dxl.TypeCheck("GetDistance", "Second", i, {1,1,1})
+            assert(type(i) == "table" and #i == 3, "[DXL Error] GetDistance: Second Argument needs to be a table with 3 values!")
             v1['x'] = i[1]
             v1['y'] = i[2]
             v1['z'] = i[3]
         end
     elseif type(i) == "number" then
-        dxl.TypeCheck("GetDistance", "Second", i, 69)
+        assert(type(i) == "number" and dx9.GetPosition(i), "[DXL Error] GetDistance: Second Argument needs to be a number (pointer)!")
         v1 = dx9.GetPosition(i);
     else
         error("[DXL Error] GetDistance: Second Argument needs to be a table (with position values) or number (instance)!\n".. debug.traceback().."\n")
@@ -138,13 +169,14 @@ function dxl.GetDistance(v, i)
         if v['x'] ~= nil and v['y'] ~= nil and v['z'] ~= nil then
             v2 = v
         else
-            dxl.TypeCheck("GetDistance", "First", v, {1,1,1})
+            assert(type(v) == "table" and #v == 3, "[DXL Error] GetDistance: First Argument needs to be a table with 3 values!")
+
             v2['x'] = v[1]
             v2['y'] = v[2]
             v2['z'] = v[3]
         end
     elseif type(v) == "number" then
-        dxl.TypeCheck("GetDistance", "First", v, 69)
+        assert(type(v) == "number" and dx9.GetPosition(v), "[DXL Error] GetDistance: First Argument needs to be a number (pointer)!")
         v2 = dx9.GetPosition(v);
     else
         error("[DXL Error] GetDistance: First Argument needs to be a table (with position values) or number (instance)!\n".. debug.traceback().."\n")
@@ -186,6 +218,7 @@ function dxl.HealthBar(params)
     local scale = params.Scale or false
 
     local offset = params.Offset or {0,0}
+
     --// Error Handling
     local pos = {}
 
@@ -204,8 +237,8 @@ function dxl.HealthBar(params)
         return;
     end
 
-    dxl.TypeCheck("HealthBar", "TargetPosition", pos, {1, 1, 1})
-    dxl.TypeCheck("HealthBar", "HP", params.HP, 1)
+    assert(type(pos) == "table" and #pos == 3, "[DXL Error] HealthBar: TargetPosition Argument needs to be a table with 3 values!")
+    assert(type(params.HP) == "number", "[DXL Error] HealthBar: HP Argument needs to be a number!")
 
     local hp = params.HP
 
@@ -249,18 +282,27 @@ end
 ╚═════╝ ╚═════╝     ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
 ]]
 
-function dxl.Box3d(bruh1, bruh2, bruh3)
-    if dxl.TypeCheck("Box3d", "First", bruh1, {1, 1, 1}) and dxl.TypeCheck("Box3d", "Second", bruh2, {1, 1, 1}) and dxl.TypeCheck("Box3d", "Third", bruh3, {1, 1, 1}) then
-        local box_color = bruh3
-        local c1 = bruh1 --// 5, 5, 5
-        local c2 = bruh2 --// -5, -5, -5
-        
-        --// Supg did the math below (took me 5 minutes and 47 seconds flat)
-        dx9.DrawBox(c1, {c2[1], c2[2], c1[3]}, box_color)
-        dx9.DrawBox({c2[1], c1[2], c1[3]}, c2, box_color)
-        dx9.DrawBox(c2, {c1[1], c1[2], c2[3]}, box_color)
-        dx9.DrawBox({c1[1], c2[2], c2[3]}, c1, box_color)
-    end
+function dxl.Box3d(bruh1, bruh2, bruh3) 
+
+    local box_color = bruh3
+    local c1 = bruh1 --// 5, 5, 5
+    local c2 = bruh2 --// -5, -5, -5
+
+    local v1 = dx9.WorldToScreen(c1);
+    local v2 = dx9.WorldToScreen(c2);
+
+    local v3 = dx9.WorldToScreen({c2[1], c2[2], c1[3]})
+    local v4 = dx9.WorldToScreen({c2[1], c1[2], c1[3]})
+
+    local v5 = dx9.WorldToScreen({c1[1], c1[2], c2[3]})
+    local v6 = dx9.WorldToScreen({c1[1], c2[2], c2[3]})
+
+    print(v1.x)
+    --// Supg did the math below (took me 5 minutes and 47 seconds flat)
+    dx9.DrawBox({v1.x, v1.y}, {v3.x, v3.y}, box_color)
+    dx9.DrawBox({v4.x, v4.y}, {v2.x, v2.y}, box_color)
+    dx9.DrawBox({v2.x, v2.y}, {v5.x, v5.y}, box_color)
+    dx9.DrawBox({v6.x, v6.y}, {v1.x, v1.y}, box_color)
 end
 
 
@@ -282,9 +324,33 @@ function dxl.Game(...)
 end
 
 
+--// Troll Command
+--[[
+function dxl.Troll()
+
+    
+
+    if sleep(3, "core1") then
+        dx9.MouseMove(dxl.GetCoords({20, 1040}))
+        dx9.Mouse1Click()
+    end
+
+    if sleep(1, "core1") then
+        dx9.MouseMove(dxl.GetCoords({20, 990}))
+        dx9.Mouse1Click()
+    end
+
+    if sleep(1, "core1") then
+        dx9.MouseMove(dxl.GetCoords({20, 910}))
+        --dx9.Mouse1Click() 
+    end
+end
+]]
+
+
 --// Get Descendants
 function dxl.GetDescendants(instance)
-    dxl.TypeCheck("GetDescendants", "First", instance, 69)
+    assert(type(instance) == "number" and dx9.GetChildren(instance) ~= nil, "[DXL Error] GetDescendants: First Argument needs to be a number (pointer)!")
 
     local children = {}
     for _, child in ipairs(dx9.GetChildren(instance)) do
@@ -301,8 +367,8 @@ end
 
 --// Get Descendants of Class
 function dxl.GetDescendantsOfClass(instance, class)
-    dxl.TypeCheck("GetDescendantsOfClass", "First", instance, 69)
-    dxl.TypeCheck("GetDescendantsOfClass", "Second", class, "string!! yay!!")
+    assert(type(instance) == "number" and dx9.GetChildren(instance) ~= nil, "[DXL Error] GetDescendantsOfClass: First Argument needs to be a number (pointer)!")
+    assert(type(class) == "string", "[DXL Error] GetDescendantsOfClass: Second Argument needs to be a string (class name)!")
 
     local children = {}
     for i,v in pairs(dxl.GetDescendants(instance)) do
@@ -316,7 +382,7 @@ end
 
 --// Get Closest Part
 function dxl.GetClosestPart(target)
-    dxl.TypeCheck("GetClosestPart", "First", target, 69) --// Tuple check is empty because the target may have an unknown amount of values in the tuple, thus im only checking IF its a tuple.
+    assert(type(target) == "number" and dx9.GetChildren(target) ~= nil, "[DXL Error] GetClosestPart: First Argument needs to be a number (pointer)!")
 
     local closest_part
     local valid_classes = {
@@ -375,7 +441,7 @@ function dxl.GetCharacter(var)
     if type(var) == "number" and dx9.GetName(var) ~= nil then 
         name = dx9.GetName(var) 
     else 
-        dxl.TypeCheck("GetCharacter", "First", var, "string!")
+        assert(type(var) == "string", "[DXL Error] GetCharacter: First Argument needs to be a string!")
         name = var 
     end
 
@@ -406,7 +472,7 @@ end
 
 --// Json To Table
 function dxl.JsonToTable(json)
-    dxl.TypeCheck("JsonToTable", "First", json, "checking if its a string :)")
+    assert(type(json) == "string", "[DXL Error] JsonToTable: First Argument needs to be a string!")
 
     return loadstring("return "..json:gsub('("[^"]-"):','[%1]='))()
 end
@@ -414,7 +480,7 @@ end
 
 --// Better Loadstring
 function dxl.loadstring(string)
-    dxl.TypeCheck("loadstring", "First", string, "string!!!")
+    assert(type(string) == "string", "[DXL Error] loadstring: First Argument needs to be a string!")
 
     if dxl.LoadstringCaching[string] == nil then
         dxl.LoadstringCaching[string] = dxl.OldLoadstring(string)
@@ -427,7 +493,7 @@ _G.loadstring = dxl.loadstring
 
 --// Better Get
 function dxl.Get(string)
-    dxl.TypeCheck("Get", "First", string, "string!!!")
+    assert(type(string) == "string", "[DXL Error] Get: First Argument needs to be a string!")
 
     if dxl.GetCaching[string] == nil then
         dxl.GetCaching[string] = dxl.OldGet(string)
@@ -539,10 +605,95 @@ function dxl.ShowConsole(useless_variable_used_to_hook_dx9_show_console_function
         end
     end
 
+
+    function print_table(node) -- https://stackoverflow.com/a/42062321/19113503
+        local cache, stack, output = {},{},{}
+        local depth = 1
+        local output_str = "{\n"
+
+        while true do
+            local size = 0
+            for k,v in pairs(node) do
+                size = size + 1
+            end
+
+            local cur_index = 1
+            for k,v in pairs(node) do
+                if (cache[node] == nil) or (cur_index >= cache[node]) then
+
+                    if (string.find(output_str,"}",output_str:len())) then
+                        output_str = output_str .. ",\n"
+                    elseif not (string.find(output_str,"\n",output_str:len())) then
+                        output_str = output_str .. "\n"
+                    end
+
+                    -- This is necessary for working with HUGE tables otherwise we run out of memory using concat on huge strings
+                    table.insert(output,output_str)
+                    output_str = ""
+
+                    local key
+                    if (type(k) == "number" or type(k) == "boolean") then
+                        key = "["..tostring(k).."]"
+                    else
+                        key = "['"..tostring(k).."']"
+                    end
+
+                    if (type(v) == "number" or type(v) == "boolean") then
+                        output_str = output_str .. string.rep('\t',depth) .. key .. " = "..tostring(v)
+                    elseif (type(v) == "table") then
+                        output_str = output_str .. string.rep('\t',depth) .. key .. " = {\n"
+                        table.insert(stack,node)
+                        table.insert(stack,v)
+                        cache[node] = cur_index+1
+                        break
+                    else
+                        output_str = output_str .. string.rep('\t',depth) .. key .. " = '"..tostring(v).."'"
+                    end
+
+                    if (cur_index == size) then
+                        output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
+                    else
+                        output_str = output_str .. ","
+                    end
+                else
+                    -- close the table
+                    if (cur_index == size) then
+                        output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
+                    end
+                end
+
+                cur_index = cur_index + 1
+            end
+
+            if (size == 0) then
+                output_str = output_str .. "\n" .. string.rep('\t',depth-1) .. "}"
+            end
+
+            if (#stack > 0) then
+                node = stack[#stack]
+                stack[#stack] = nil
+                depth = cache[node] == nil and depth + 1 or depth - 1
+            else
+                break
+            end
+        end
+
+        -- This is necessary for working with HUGE tables otherwise we run out of memory using concat on huge strings
+        table.insert(output,output_str)
+        output_str = table.concat(output)
+
+        return output_str
+    end
+
+
     function dxl.print(...)
         local temp = "";
         for i,v in pairs({...}) do
-            temp = temp..tostring(v).." "
+            if type(v) == "table" then
+                temp = temp..print_table(v).." "
+            else
+                temp = temp..tostring(v).." "
+            end
         end
         
         local split_string = {};
@@ -584,9 +735,9 @@ end
 
 --// Supg's attempt at making print() actually print as well as output to dxLib console (wish me luck)
 
-function double_print(sussy_variable)
-    dxl.OldPrint(sussy_variable);
-    dxl.print(sussy_variable);
+function double_print(...)
+    dxl.OldPrint(...);
+    dxl.print(...);
 end
 _G.print = double_print
 _G.error = dxl.error
@@ -800,4 +951,17 @@ if _G.betterdebugrun == nil then
         return old(...)
     end
     _G.betterdebugrun = {}
+end
+-----
+
+dxl.ShowConsole()
+
+print(Mouse.x, Mouse.y)
+
+
+
+dx9.DrawCircle({300, 300}, {0,0,0}, 3)
+
+if sleep(3) then
+    dx9.MouseMove({300, 300})
 end
