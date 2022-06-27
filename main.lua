@@ -970,6 +970,7 @@ if _G.betterdebugrun == nil then
 end
 -----
 
+--[[
 dxl.ShowConsole()
 
 print(Mouse.x, Mouse.y)
@@ -985,4 +986,5 @@ local legpos = dx9.GetPosition(leg)
 local headpos = {headpos.x - 1.2, headpos.y + 1, headpos.z - 1.2}
 local legpos = {legpos.x + 1.2, legpos.y - 2.5, legpos.z + 1.2}
 
-dxl.Box3d(headpos, legpos, {255,255,255}) 
+dxl.Box3d(headpos, legpos, {255,255,255})
+]]
