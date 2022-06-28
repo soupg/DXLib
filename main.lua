@@ -424,23 +424,10 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
     if dx9.FindFirstChild(target, "HumanoidRootPart") and dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart")) then
         local torso = dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart"))
 
+        if torso.x < 0 or torso.y < 0 or torso.x > dx9.size().width or torso.y > dx9.size().height then return end
+
         local HeadPosY = torso.y + 2.5
         local LegPosY = torso.y - 3.5
-
-        --// yusuf code  
-        --[[
-        local top = dx9.WorldToScreen({torso.x , HeadPosY, torso.z})
-        local bottom = dx9.WorldToScreen({torso.x , LegPosY, torso.z})
-
-        local myheight = bottomPositon.y - topPosition.y
-        local mywidth = (myheight / 2) / 1,2
-
-        local TopLeft(hrpPosition.x - mywidth, hrpPosition.y - myheight)
-        local BottomRight(hrpPosition.x + mywidth, hrpPosition.y)
-        
-        DrawFilledBox(TopLeft, BottomRight, Colours::background_colour)
-
-        ]]
 
         local Top = dx9.WorldToScreen({torso.x , HeadPosY, torso.z})
         local Bottom = dx9.WorldToScreen({torso.x , LegPosY, torso.z})
@@ -472,11 +459,6 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
             dxl.Box3d({torso.x - 2, HeadPosY, torso.z - 2}, {torso.x + 2, LegPosY, torso.z + 2}, box_color)
         end
 
-        --dx9.DrawLine({TL.x - height/3, TL.y}, {TR.x + height/3, TR.y}, box_color) -- Top
-        --dx9.DrawLine({BL.x - height/3, BL.y}, {BR.x + height/3, BR.y}, box_color) -- Bottom
-        --dx9.DrawLine({TR.x + height/3, TR.y}, {BR.x + height/3, BR.y}, box_color) -- Right
-        --dx9.DrawLine({BL.x - height/3, BL.y}, {TL.x - height/3, TL.y}, box_color) -- Left
-
         if healthbar then
             if dx9.FindFirstChild(target, "Humanoid") then
                 local tl = {Top.x + width - 5, Top.y + 1}
@@ -493,9 +475,6 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
                 dx9.DrawBox({tl[1] - 1, tl[2] - 1}, {br[1] + 1, br[2] + 1}, box_color) -- Outer
                 dx9.DrawFilledBox({tl[1], tl[2]}, {br[1], br[2]}, {0,0,0}) -- Inner Black
                 dx9.DrawFilledBox({tl[1] + 1, br[2] - 1}, {br[1] - 1,    (br[2] + addon + 1)   }, {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0}) -- Inner
-
-                --dx9.DrawFilledBox({x - (size_x/2) + offset[1], y + offset[2]}, {x + (size_x/2) + offset[1], y - size_y + offset[2]}, {0,0,0});
-                --dx9.DrawFilledBox({x - ((size_x/2) - 1) + offset[1], y - 1 + offset[2]}, {x - ((size_x/2) - 1) + temp + offset[1], y - (size_y - 1) + offset[2]},   {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0});
             else
                 error("[DXL Error] BoxESP: Target has no humanoid, healthbar not added!")
             end
