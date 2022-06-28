@@ -1211,14 +1211,3 @@ if _G.betterdebugrun == nil then
     end
     _G.betterdebugrun = {}
 end
------
-
--- dxl.BoxESP({Target = dxl.Game("Workspace", "Dummy"), Color = {255,255,255}, Healthbar = true, Distance = true, Nametag = true, Tracer = true, TracerType = 1, BoxType = 1})
-
---[[
-for i,v in pairs(dx9.GetChildren(dxl.GetPlayerFolder())) do
-    if dx9.get_player(dx9.GetName(v)) ~= nil and dx9.GetName(v) ~= dxl.GetLocalPlayerName() and dx9.GetTeam(dxl.GetPlayer(dx9.GetName(v))) ~= dx9.GetTeam(dxl.GetLocalPlayer()) then
-        dxl.Esp3d({Target = v, Color = dxl.CurrentRainbowColor, Healthbar = true, Distance = true, Nametag = true, Tracer = true, TracerType = "Bottom"})
-    end
-end
-]]
