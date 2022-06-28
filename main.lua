@@ -412,7 +412,7 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
     local distance = params.Distance or false
     local nametag = params.Nametag or false
     local tracer = params.Tracer or false
-    local tracertype = params.TracerType or 1 --// 1 = bottom, 2 = top, 3 = mouse
+    local tracertype = params.TracerType or 1 --// 1 = near-bottom, 2 = bottom, 3 = top, 4 = mouse
     local box_type = params.BoxType or 1 --// 1 = corners, 2 = 2d box, 3 = 3d box
 
     --// Error Handling
@@ -517,8 +517,10 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
             if tracertype == 1 then
                 loc = {dx9.size().width / 2, dx9.size().height / 1.1}
             elseif tracertype == 2 then
-                loc = {dx9.size().width / 2, dx9.size().height * 1.1}
-            else 
+                loc = {dx9.size().width / 2, dx9.size().height}
+            elseif tracertype == 3 then
+                loc = {dx9.size().width / 2, 0}
+            else
                 loc = {dx9.GetMouse().x, dx9.GetMouse().y}
             end
 
