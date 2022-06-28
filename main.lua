@@ -416,7 +416,7 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
     local box_type = params.BoxType or 1 --// 1 = corners, 2 = 2d box, 3 = 3d box
 
     --// Error Handling
-    assert(type(tracertype) == "number" and (tracertype == 1 or tracertype == 2 or tracertype == 3), "[DXL Error] BoxESP: TracerType Argument needs to be a number! (1 - 3)")
+    assert(type(tracertype) == "number" and (tracertype == 1 or tracertype == 2 or tracertype == 3 or tracertype == 4), "[DXL Error] BoxESP: TracerType Argument needs to be a number! (1 - 4)")
     assert(type(box_type) == "number" and (box_type == 1 or box_type == 2 or box_type == 3), "[DXL Error] BoxESP: BoxType Argument needs to be a number! (1 - 3)")
     assert(type(target) == "number" and dx9.GetChildren(target) ~= nil, "[DXL Error] BoxESP: Target Argument needs to be a number (pointer) to character!")
     assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] BoxESP: Color Argument needs to be a table with 3 RGB values!")
