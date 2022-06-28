@@ -7,6 +7,7 @@ local Workspace = dx9.FindFirstChild(Game,"Workspace");
 local Mouse = dx9.GetMouse();
 local LocalPlayer = dx9.get_localplayer();
 local Players = dx9.get_players();
+
 local Screen = {
     x = dx9.size().width;
     y = dx9.size().height;
@@ -19,10 +20,10 @@ if _G.dxl == nil then
         Location = {1000, 150}; -- Dynamic
         Size = {dx9.size().width / 2.95, dx9.size().height / 1.21}; -- Static
         FontColor = {255,255,255}; -- Static + [Changeable]
-        MainColor = {28,28,28}; -- Static + [Changeable]
-        BackgroundColor = {20,20,20}; -- Static + [Changeable]
-        AccentColor = {0,85,255}; -- Static + [Changeable]
-        OutlineColor = {50,50,50}; -- Static + [Changeable]
+        MainColor = {25,25,25}; -- Static + [Changeable]
+        BackgroundColor = {15,15,15}; -- Static + [Changeable]
+        AccentColor = {255,100,255}; -- Static + [Changeable]
+        OutlineColor = {40,40,40}; -- Static + [Changeable]
         Black = {0,0,0}; -- Static
 
         ErrorColor = {255,100,100};
@@ -46,7 +47,42 @@ if _G.dxl == nil then
 
         --// Sleep
         Threads = {};
+
+        --// Dragging
+        Dragging = false;
+
+        --// Character Stuff (saved for optimization)
+        Characters = {};
+        PlayerFolder = nil;
+
+        --// Rainbow
+        CurrentRainbowColor = {255,255,255};
+        RainbowHue = 0;
     };
+end
+
+
+--// Rainbow Tick
+do
+    if dxl.RainbowHue > 1530 then
+        dxl.RainbowHue = 0  
+    else
+        dxl.RainbowHue = dxl.RainbowHue + 3
+    end
+
+    if dxl.RainbowHue <= 255 then
+        dxl.CurrentRainbowColor = {255, dxl.RainbowHue, 0}
+    elseif dxl.RainbowHue <= 510 then
+        dxl.CurrentRainbowColor = {510 - dxl.RainbowHue, 255, 0}
+    elseif dxl.RainbowHue <= 765 then
+        dxl.CurrentRainbowColor = {0, 255, dxl.RainbowHue - 510}
+    elseif dxl.RainbowHue <= 1020 then
+        dxl.CurrentRainbowColor = {0, 1020 - dxl.RainbowHue, 255}
+    elseif dxl.RainbowHue <= 1275 then
+        dxl.CurrentRainbowColor = {dxl.RainbowHue - 1020, 0, 255}
+    elseif dxl.RainbowHue <= 1530 then
+        dxl.CurrentRainbowColor = {255, 0, 1530 - dxl.RainbowHue}
+    end
 end
 
 
@@ -282,11 +318,15 @@ end
 ╚═════╝ ╚═════╝     ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
 ]]
 
-function dxl.Box3d(bruh1, bruh2, bruh3) 
+function dxl.Box3d(pos1, pos2, box_color) 
 
-    local box_color = bruh3
-    local c1 = bruh1 --// 5, 5, 5 POSITIVE
-    local c2 = bruh2 --// -5, -5, -5 NEGATIVE
+    --// Error Handling
+    assert(type(pos1) == "table" and #pos1 == 3, "[DXL Error] Box3d: First Argument needs to be a table with 3 position values!")
+    assert(type(pos2) == "table" and #pos2 == 3, "[DXL Error] Box3d: Second Argument needs to be a table with 3 position values!")
+    assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] Box3d: Third Argument needs to be a table with 3 RGB values!")
+
+    local c1 = pos1 --// POSITIVE
+    local c2 = pos2 --// NEGATIVE
 
     local v1 = dx9.WorldToScreen(c1);
     local v2 = dx9.WorldToScreen(c2);
@@ -300,7 +340,7 @@ function dxl.Box3d(bruh1, bruh2, bruh3)
     local v7 = dx9.WorldToScreen({c2[1], c1[2], c2[3]})
     local v8 = dx9.WorldToScreen({c1[1], c2[2], c1[3]})
 
-    --// Supg did the math below (took me 5 minutes and 47 seconds flat)
+    --// Supg did the stuff below (took me 5 minutes and 47 seconds flat)
     dx9.DrawLine({v4.x, v4.y}, {v1.x, v1.y}, box_color) -- Top Front
     dx9.DrawLine({v7.x, v7.y}, {v5.x, v5.y}, box_color) -- Top Back
 
@@ -313,12 +353,170 @@ function dxl.Box3d(bruh1, bruh2, bruh3)
     dx9.DrawLine({v2.x, v2.y}, {v3.x, v3.y}, box_color) -- Bottom Left
     dx9.DrawLine({v6.x, v6.y}, {v8.x, v8.y}, box_color) -- Bottom Right {v1.x, v1.y}
 
-    -- here
     dx9.DrawLine({v1.x, v1.y}, {v8.x, v8.y}, box_color) -- Front Right
     dx9.DrawLine({v4.x, v4.y}, {v3.x, v3.y}, box_color) -- Front Left
 
     dx9.DrawLine({v5.x, v5.y}, {v6.x, v6.y}, box_color) -- Back Right
     dx9.DrawLine({v7.x, v7.y}, {v2.x, v2.y}, box_color) -- Back Left
+end
+
+
+--[[
+██████╗  ██████╗ ██╗  ██╗██████╗ ██████╗ 
+██╔══██╗██╔═══██╗╚██╗██╔╝╚════██╗██╔══██╗
+██████╔╝██║   ██║ ╚███╔╝  █████╔╝██║  ██║
+██╔══██╗██║   ██║ ██╔██╗ ██╔═══╝ ██║  ██║
+██████╔╝╚██████╔╝██╔╝ ██╗███████╗██████╔╝
+╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═════╝ 
+]]
+
+function dxl.Box2d(pos_list, box_color) -- CHANGE | Add error handling for first var to check if its a table with 4 table with each table having 3 values {{x,y,z},{x,y,z},{x,y,z},{x,y,z}}
+
+    --// Error Handling
+    assert(type(pos_list) == "table" and #pos_list == 4, "[DXL Error] Box3d: First Argument needs to be a table with 4 values!")
+    assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] Box3d: Second Argument needs to be a table with 3 RGB values!")
+
+    local TL = dx9.WorldToScreen(pos_list[1])
+    local TR = dx9.WorldToScreen(pos_list[2])
+    local BL = dx9.WorldToScreen(pos_list[3])
+    local BR = dx9.WorldToScreen(pos_list[4])
+
+    dx9.DrawLine({TL.x, TL.y}, {TR.x, TR.y}, box_color) -- Top
+    dx9.DrawLine({BL.x, BL.y}, {BR.x, BR.y}, box_color) -- Bottom
+    dx9.DrawLine({TR.x, TR.y}, {BR.x, BR.y}, box_color) -- Right
+    dx9.DrawLine({BL.x, BL.y}, {TL.x, TL.y}, box_color) -- Left
+
+end
+
+
+--[[
+██████╗  ██████╗ ██╗  ██╗    ███████╗███████╗██████╗ 
+██╔══██╗██╔═══██╗╚██╗██╔╝    ██╔════╝██╔════╝██╔══██╗
+██████╔╝██║   ██║ ╚███╔╝     █████╗  ███████╗██████╔╝
+██╔══██╗██║   ██║ ██╔██╗     ██╔══╝  ╚════██║██╔═══╝ 
+██████╔╝╚██████╔╝██╔╝ ██╗    ███████╗███████║██║     
+╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚══════╝╚══════╝╚═╝     
+]]
+
+--// BOX BoxESP
+function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healthbar = false, Distance = false, Nametag = false, Tracer = false, TracerType = "mouse", BoxType = 1} 
+
+    local target = params.Target or nil
+    local box_color = params.Color or {255,255,255}
+    local healthbar = params.Healthbar or false
+    local distance = params.Distance or false
+    local nametag = params.Nametag or false
+    local tracer = params.Tracer or false
+    local tracertype = string.lower(params.TracerType) or "mouse"
+    local box_type = params.BoxType or 1 --// 1 = corners, 2 = 2d box, 3 = 3d box
+
+    --// Error Handling
+    assert(type(box_type) == "number" and (box_type == 1 or box_type == 2 or box_type == 3), "[DXL Error] BoxESP: BoxType Argument needs to be a number! (see docs)")
+    assert(type(target) == "number" and dx9.GetChildren(target) ~= nil, "[DXL Error] BoxESP: Target Argument needs to be a number (pointer) to character!")
+    assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] BoxESP: Color Argument needs to be a table with 3 RGB values!")
+
+    if dx9.FindFirstChild(target, "HumanoidRootPart") and dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart")) then
+        local torso = dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart"))
+
+        local HeadPosY = torso.y + 2.5
+        local LegPosY = torso.y - 3.5
+
+        --// yusuf code  
+        --[[
+        local top = dx9.WorldToScreen({torso.x , HeadPosY, torso.z})
+        local bottom = dx9.WorldToScreen({torso.x , LegPosY, torso.z})
+
+        local myheight = bottomPositon.y - topPosition.y
+        local mywidth = (myheight / 2) / 1,2
+
+        local TopLeft(hrpPosition.x - mywidth, hrpPosition.y - myheight)
+        local BottomRight(hrpPosition.x + mywidth, hrpPosition.y)
+        
+        DrawFilledBox(TopLeft, BottomRight, Colours::background_colour)
+
+        ]]
+
+        local Top = dx9.WorldToScreen({torso.x , HeadPosY, torso.z})
+        local Bottom = dx9.WorldToScreen({torso.x , LegPosY, torso.z})
+
+        local height = Top.y - Bottom.y
+
+        local width = (height / 2) 
+        width = width / 1.2
+
+        
+
+        --// Draw Box
+        if box_type == 1 then --// cormers
+            dx9.DrawLine({Top.x + width + 2, Top.y}, {Top.x + (width/2) + 2, Top.y}, box_color) -- TopLeft 1
+            dx9.DrawLine({Top.x + width + 2, Top.y}, {Top.x + width + 2, Top.y - (height/4)}, box_color) -- TopLeft 2
+
+            dx9.DrawLine({Bottom.x - width, Top.y}, {Bottom.x - (width/2), Top.y}, box_color) -- TopRight 1
+            dx9.DrawLine({Bottom.x - width, Top.y}, {Bottom.x - width, Top.y - (height/4)}, box_color) -- TopRight 2
+
+            dx9.DrawLine({Top.x + width + 2, Bottom.y}, {Top.x + (width/2) + 2, Bottom.y}, box_color) -- BottomLeft 1
+            dx9.DrawLine({Top.x + width + 2, Bottom.y}, {Top.x + width + 2, Bottom.y + (height/4)}, box_color) -- BottomLeft 2
+
+            dx9.DrawLine({Bottom.x - width, Bottom.y}, {Bottom.x - (width/2), Bottom.y}, box_color) -- BottomRight 1
+            dx9.DrawLine({Bottom.x - width, Bottom.y}, {Bottom.x - width, Bottom.y + (height/4)}, box_color) -- BottomRight 2
+
+        elseif box_type == 2 then
+            dx9.DrawBox({Bottom.x - width, Top.y}, {Top.x + width, Bottom.y}, box_color)
+        else
+            dxl.Box3d({torso.x - 2, HeadPosY, torso.z - 2}, {torso.x + 2, LegPosY, torso.z + 2}, box_color)
+        end
+
+        --dx9.DrawLine({TL.x - height/3, TL.y}, {TR.x + height/3, TR.y}, box_color) -- Top
+        --dx9.DrawLine({BL.x - height/3, BL.y}, {BR.x + height/3, BR.y}, box_color) -- Bottom
+        --dx9.DrawLine({TR.x + height/3, TR.y}, {BR.x + height/3, BR.y}, box_color) -- Right
+        --dx9.DrawLine({BL.x - height/3, BL.y}, {TL.x - height/3, TL.y}, box_color) -- Left
+
+        if healthbar then
+            if dx9.FindFirstChild(target, "Humanoid") then
+                local tl = {Top.x + width - 5, Top.y + 1}
+                local br = {Top.x + width - 1, Bottom.y - 1}
+
+                local humanoid = dx9.FindFirstChild(target, "Humanoid")
+                local hp = dx9.GetHealth(humanoid)
+                local maxhp = dx9.GetMaxHealth(humanoid)
+
+
+                --// A lot of math stuff, dont mess with it unless u know what ur doing
+                local addon = ( (height + 2) / ( maxhp/math.max(0, math.min(maxhp, hp))) )
+                
+                dx9.DrawBox({tl[1] - 1, tl[2] - 1}, {br[1] + 1, br[2] + 1}, box_color) -- Outer
+                dx9.DrawFilledBox({tl[1], tl[2]}, {br[1], br[2]}, {0,0,0}) -- Inner Black
+                dx9.DrawFilledBox({tl[1] + 1, br[2] - 1}, {br[1] - 1,    (br[2] + addon + 1)   }, {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0}) -- Inner
+
+                --dx9.DrawFilledBox({x - (size_x/2) + offset[1], y + offset[2]}, {x + (size_x/2) + offset[1], y - size_y + offset[2]}, {0,0,0});
+                --dx9.DrawFilledBox({x - ((size_x/2) - 1) + offset[1], y - 1 + offset[2]}, {x - ((size_x/2) - 1) + temp + offset[1], y - (size_y - 1) + offset[2]},   {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0});
+            else
+                error("[DXL Error] BoxESP: Target has no humanoid, healthbar not added!")
+            end
+        end
+
+        if distance then
+            local dist = ""..dxl.GetDistanceFromPlayer(torso)
+            dx9.DrawString({Bottom.x - (dx9.CalcTextWidth(dist) / 2), Bottom.y}, box_color, dist)
+        end
+
+        if nametag then
+            local name = dx9.GetName(target)
+            dx9.DrawString({Top.x - (dx9.CalcTextWidth(name) / 2), Top.y - 20}, box_color, name)
+        end
+
+        if tracer then
+            local loc = {dx9.GetMouse().x, dx9.GetMouse().y} -- Location of tracer start
+
+            if tracertype == "bottom" then
+                loc = {dx9.size().width / 2, dx9.size().height / 1.1}
+            end
+
+            dx9.DrawLine(loc, {Top.x + width + (((Bottom.x - width) - (Top.x + width)) / 2), Bottom.y}, box_color)
+        end
+    else
+        error("[DXL Error] BoxESP: Passed in target has no HumanoidRootPart!")
+    end
 end
 
 
@@ -450,6 +648,23 @@ function dxl.GetLocalPlayerGUI()
     return dxl.Game("Players", dxl.GetLocalPlayerName(),"PlayerGui")
 end
 
+--// Get Player
+function dxl.GetPlayer(name)
+    return dx9.FindFirstChild(dxl.Game("Players"), name)
+end
+
+--// Get Player PlayerFolder (doesent work for some games)
+function dxl.GetPlayerFolder()
+    if dxl.PlayerFolder ~= nil then return dxl.PlayerFolder end
+
+    for i,v in pairs(dxl.GetDescendants(dxl.Game("Workspace"))) do
+        if dx9.GetName(v) == dxl.GetLocalPlayerName() and dx9.GetType(v) == "Model" then
+            dxl.PlayerFolder = dx9.GetParent(v)
+            return dx9.GetParent(v)
+        end
+    end
+end
+
 --// Get Character
 function dxl.GetCharacter(var) 
     local name
@@ -461,8 +676,11 @@ function dxl.GetCharacter(var)
         name = var 
     end
 
+    if dxl.Characters[name] ~= nil then return dxl.Characters[name] end
+
     for i,v in pairs(dxl.GetDescendants(dxl.Game("Workspace"))) do
         if dx9.GetName(v) == name and dx9.GetType(v) == "Model" then
+            dxl.Characters[dx9.GetName(v)] = v 
             return v
         end
     end
@@ -537,13 +755,16 @@ function dxl.ShowConsole(useless_variable_used_to_hook_dx9_show_console_function
     --// Left Click Held
     if dx9.isLeftClickHeld() then
         --// Drag Func
-        if dxl.isMouseInArea({dxl.Location[1] - 5, dxl.Location[2] - 10, dxl.Location[1] + dxl.Size[1] + 5, dxl.Location[2] + 30}) then
+        if dxl.Dragging or dxl.isMouseInArea({dxl.Location[1] - 5, dxl.Location[2] - 10, dxl.Location[1] + dxl.Size[1] + 5, dxl.Location[2] + 30}) then
+            if not dxl.Dragging then dxl.Dragging = true end 
+
             if dxl.WinMouseOffset == nil then
                 dxl.WinMouseOffset = {dx9.GetMouse().x - dxl.Location[1], dx9.GetMouse().y - dxl.Location[2]}
             end
             dxl.Location = {dx9.GetMouse().x - dxl.WinMouseOffset[1], dx9.GetMouse().y - dxl.WinMouseOffset[2]}
         end
     else
+        dxl.Dragging = false
         dxl.WinMouseOffset = nil
     end
 
@@ -554,7 +775,7 @@ function dxl.ShowConsole(useless_variable_used_to_hook_dx9_show_console_function
         dx9.DrawFilledBox({dxl.Location[1] + 5, dxl.Location[2] + 20}, {dxl.Location[1] + dxl.Size[1] - 5, dxl.Location[2] + dxl.Size[2] - 5}, dxl.BackgroundColor) --// Main Inner (dark gray)
         dx9.DrawBox({dxl.Location[1] + 5, dxl.Location[2] + 20}, {dxl.Location[1] + dxl.Size[1] - 5, dxl.Location[2] + dxl.Size[2] - 5}, dxl.OutlineColor) --// Main Inner Outline 
         dx9.DrawBox({dxl.Location[1] + 6, dxl.Location[2] + 21}, {dxl.Location[1] + dxl.Size[1] - 6, dxl.Location[2] + dxl.Size[2] - 6}, dxl.Black) --// Main Inner Outline Black
-        dx9.DrawString(dxl.Location, dxl.FontColor, "  DXLib Console")
+        dx9.DrawString(dxl.Location, dxl.FontColor, "  DXLib Console | Mouse: "..Mouse.x..", "..Mouse.y) 
 
         for i,v in pairs(dxl.StoredLogs) do
             if string.sub(v, 1, 9) == "ERROR_TAG" then
@@ -887,6 +1108,10 @@ if _G.betterdebugrun == nil then
                 dxl.error("[DX9 Error] "..v..": Third Argument needs to be a table!" .. "\n" .. debug.traceback() .. "\n")
                 return
             end
+
+            if args[1][1] + args[1][2] == 0 then return end
+            if args[2][1] + args[2][2] == 0 then return end
+
             return old(...)
         end
     end
@@ -907,6 +1132,9 @@ if _G.betterdebugrun == nil then
             dxl.error("[DX9 Error] "..v..": Third Argument needs to be a number!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
+
+        if args[1][1] + args[1][2] == 0 then return end
+
         return old(...)
     end
 
@@ -926,6 +1154,9 @@ if _G.betterdebugrun == nil then
             dxl.error("[DX9 Error] "..v..": Third Argument needs to be a string!" .. "\n" .. debug.traceback() .. "\n")
             return
         end
+
+        if args[1][1] + args[1][2] == 0 then return end
+
         return old(...)
     end
 
@@ -970,21 +1201,3 @@ if _G.betterdebugrun == nil then
 end
 -----
 
---[[
-dxl.ShowConsole()
-
-print(Mouse.x, Mouse.y)
-
-local char = dxl.GetLocalCharacter()
-
-local head = dx9.FindFirstChild(char, "Head")
-local leg = dx9.FindFirstChild(char, "HumanoidRootPart")
-
-local headpos = dx9.GetPosition(head)
-local legpos = dx9.GetPosition(leg)
-
-local headpos = {headpos.x - 1.2, headpos.y + 1, headpos.z - 1.2}
-local legpos = {legpos.x + 1.2, legpos.y - 2.5, legpos.z + 1.2}
-
-dxl.Box3d(headpos, legpos, {255,255,255})
-]]
