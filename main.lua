@@ -404,7 +404,7 @@ end
 ]]
 
 --// BOX BoxESP
-function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healthbar = false, Distance = false, Nametag = false, Tracer = false, TracerType = "mouse", BoxType = 1} 
+function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healthbar = false, Distance = false, Nametag = false, Tracer = false, TracerType = 1, BoxType = 1} 
 
     local target = params.Target or nil
     local box_color = params.Color or {255,255,255}
@@ -412,11 +412,12 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
     local distance = params.Distance or false
     local nametag = params.Nametag or false
     local tracer = params.Tracer or false
-    local tracertype = string.lower(params.TracerType) or "mouse"
+    local tracertype = params.TracerType or 1 --// 1 = bottom, 2 = top, 3 = mouse
     local box_type = params.BoxType or 1 --// 1 = corners, 2 = 2d box, 3 = 3d box
 
     --// Error Handling
-    assert(type(box_type) == "number" and (box_type == 1 or box_type == 2 or box_type == 3), "[DXL Error] BoxESP: BoxType Argument needs to be a number! (see docs)")
+    assert(type(tracertype) == "number" and (tracertype == 1 or tracertype == 2 or tracertype == 3), "[DXL Error] BoxESP: TracerType Argument needs to be a number! (1 - 3)")
+    assert(type(box_type) == "number" and (box_type == 1 or box_type == 2 or box_type == 3), "[DXL Error] BoxESP: BoxType Argument needs to be a number! (1 - 3)")
     assert(type(target) == "number" and dx9.GetChildren(target) ~= nil, "[DXL Error] BoxESP: Target Argument needs to be a number (pointer) to character!")
     assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] BoxESP: Color Argument needs to be a table with 3 RGB values!")
 
@@ -511,10 +512,14 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
         end
 
         if tracer then
-            local loc = {dx9.GetMouse().x, dx9.GetMouse().y} -- Location of tracer start
+            local loc -- Location of tracer start
 
-            if tracertype == "bottom" then
+            if tracertype == 1 then
                 loc = {dx9.size().width / 2, dx9.size().height / 1.1}
+            elseif tracertype == 2 then
+                loc = {dx9.size().width / 2, dx9.size().height * 1.1}
+            else 
+                loc = {dx9.GetMouse().x, dx9.GetMouse().y}
             end
 
             dx9.DrawLine(loc, {Top.x + width + (((Bottom.x - width) - (Top.x + width)) / 2), Bottom.y}, box_color)
@@ -1204,3 +1209,14 @@ if _G.betterdebugrun == nil then
     end
     _G.betterdebugrun = {}
 end
+-----
+
+-- dxl.BoxESP({Target = dxl.Game("Workspace", "Dummy"), Color = {255,255,255}, Healthbar = true, Distance = true, Nametag = true, Tracer = true, TracerType = 1, BoxType = 1})
+
+--[[
+for i,v in pairs(dx9.GetChildren(dxl.GetPlayerFolder())) do
+    if dx9.get_player(dx9.GetName(v)) ~= nil and dx9.GetName(v) ~= dxl.GetLocalPlayerName() and dx9.GetTeam(dxl.GetPlayer(dx9.GetName(v))) ~= dx9.GetTeam(dxl.GetLocalPlayer()) then
+        dxl.Esp3d({Target = v, Color = dxl.CurrentRainbowColor, Healthbar = true, Distance = true, Nametag = true, Tracer = true, TracerType = "Bottom"})
+    end
+end
+]]
