@@ -519,7 +519,7 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
             elseif tracertype == 2 then
                 loc = {dx9.size().width / 2, dx9.size().height}
             elseif tracertype == 3 then
-                loc = {dx9.size().width / 2, 0}
+                loc = {dx9.size().width / 2, 1}
             else
                 loc = {dx9.GetMouse().x, dx9.GetMouse().y}
             end
