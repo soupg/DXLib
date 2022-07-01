@@ -87,7 +87,6 @@ end
 
 
 --// Threads (temp)
-
 local ThreadCount = 0
 
 function sleep(v, index)
@@ -638,28 +637,6 @@ function dxl.GetPlayerFolder()
     end
 end
 
---// Get Character
-function dxl.GetCharacter(var) 
-    local name
-
-    if type(var) == "number" and dx9.GetName(var) ~= nil then 
-        name = dx9.GetName(var) 
-    else 
-        assert(type(var) == "string", "[DXL Error] GetCharacter: First Argument needs to be a string!")
-        name = var 
-    end
-
-    if dxl.Characters[name] ~= nil then return dxl.Characters[name] end
-
-    for i,v in pairs(dxl.GetDescendants(dxl.Game("Workspace"))) do
-        if dx9.GetName(v) == name and dx9.GetType(v) == "Model" then
-            dxl.Characters[dx9.GetName(v)] = v 
-            return v
-        end
-    end
-
-    return 0
-end
 
 --// Get Local Character
 function dxl.GetLocalCharacter()
