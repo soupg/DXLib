@@ -414,8 +414,6 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
     if dx9.FindFirstChild(target, "HumanoidRootPart") and dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart")) then
         local torso = dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart"))
 
-        if torso.x < 0 or torso.y < 0 or torso.x > dx9.size().width or torso.y > dx9.size().height then return end
-
         local HeadPosY = torso.y + 2.5
         local LegPosY = torso.y - 3.5
 
@@ -426,8 +424,6 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
 
         local width = (height / 2) 
         width = width / 1.2
-
-        
 
         --// Draw Box
         if box_type == 1 then --// cormers
