@@ -93,7 +93,7 @@ local ThreadCount = 0
 function sleep(v, index)
     ThreadCount = ThreadCount + 1
 
-    assert(type(v) == "number" and v >= 0, "Bruh") --// Change error
+    assert(type(v) == "number" and v >= 0, "[DXL Error] sleep: First Argument needs to be a number above 0!")
 
     if v == 0 then
         dxl.Threads[ThreadCount] = nil
@@ -318,6 +318,7 @@ end
 ╚═════╝ ╚═════╝     ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
 ]]
 
+--// Huge thanks to Siydge#6955 for this
 function dxl.Box3d(pos1, pos2, box_color) 
 
     --// Error Handling
@@ -325,39 +326,28 @@ function dxl.Box3d(pos1, pos2, box_color)
     assert(type(pos2) == "table" and #pos2 == 3, "[DXL Error] Box3d: Second Argument needs to be a table with 3 position values!")
     assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] Box3d: Third Argument needs to be a table with 3 RGB values!")
 
-    local c1 = pos1 --// POSITIVE
-    local c2 = pos2 --// NEGATIVE
+    local box_matrix = { 
+        1,1,1,-1,1,1,
+        -1,1,1,-1,-1,1,
+        1,1,1,1,-1,1,
+        1,-1,1,-1,-1,1,
+        1,1,-1,1,1,1,
+        1,-1,-1,1,-1,1,
+        1,1,-1,1,-1,-1,
+        1,1,-1,-1,1,-1,
+        -1,-1,-1,-1,1,-1,
+        1,-1,-1,-1,-1,-1,
+        -1,-1,-1,-1,-1,1,
+        -1,1,-1,-1,1,1,
+    }
 
-    local v1 = dx9.WorldToScreen(c1);
-    local v2 = dx9.WorldToScreen(c2);
-
-    local v3 = dx9.WorldToScreen({c2[1], c2[2], c1[3]})
-    local v4 = dx9.WorldToScreen({c2[1], c1[2], c1[3]})
-
-    local v5 = dx9.WorldToScreen({c1[1], c1[2], c2[3]})
-    local v6 = dx9.WorldToScreen({c1[1], c2[2], c2[3]})
-
-    local v7 = dx9.WorldToScreen({c2[1], c1[2], c2[3]})
-    local v8 = dx9.WorldToScreen({c1[1], c2[2], c1[3]})
-
-    --// Supg did the stuff below (took me 5 minutes and 47 seconds flat)
-    dx9.DrawLine({v4.x, v4.y}, {v1.x, v1.y}, box_color) -- Top Front
-    dx9.DrawLine({v7.x, v7.y}, {v5.x, v5.y}, box_color) -- Top Back
-
-    dx9.DrawLine({v7.x, v7.y}, {v4.x, v4.y}, box_color) -- Top Left
-    dx9.DrawLine({v5.x, v5.y}, {v1.x, v1.y}, box_color) -- Top Right
-
-    dx9.DrawLine({v3.x, v3.y}, {v8.x, v8.y}, box_color) -- Bottom Front
-    dx9.DrawLine({v2.x, v2.y}, {v6.x, v6.y}, box_color) -- Bottom Back
-
-    dx9.DrawLine({v2.x, v2.y}, {v3.x, v3.y}, box_color) -- Bottom Left
-    dx9.DrawLine({v6.x, v6.y}, {v8.x, v8.y}, box_color) -- Bottom Right {v1.x, v1.y}
-
-    dx9.DrawLine({v1.x, v1.y}, {v8.x, v8.y}, box_color) -- Front Right
-    dx9.DrawLine({v4.x, v4.y}, {v3.x, v3.y}, box_color) -- Front Left
-
-    dx9.DrawLine({v5.x, v5.y}, {v6.x, v6.y}, box_color) -- Back Right
-    dx9.DrawLine({v7.x, v7.y}, {v2.x, v2.y}, box_color) -- Back Left
+    local x = pos1[1] - pos2[1]
+    local y = pos1[2] - pos2[2]
+    local z = pos1[3] - pos2[3]
+    
+    local size = {x, y, z}
+    
+    dx9.Box3d(box_matrix, {(pos1[1] + pos2[1]) / 2, (pos1[2] + pos2[2]) / 2, (pos1[3] + pos2[3]) / 2}, {0, 0, 0}, size, box_color)
 end
 
 
@@ -370,11 +360,16 @@ end
 ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═════╝ 
 ]]
 
-function dxl.Box2d(pos_list, box_color) -- CHANGE | Add error handling for first var to check if its a table with 4 table with each table having 3 values {{x,y,z},{x,y,z},{x,y,z},{x,y,z}}
+function dxl.Box2d(pos_list, box_color) 
 
     --// Error Handling
     assert(type(pos_list) == "table" and #pos_list == 4, "[DXL Error] Box3d: First Argument needs to be a table with 4 values!")
     assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] Box3d: Second Argument needs to be a table with 3 RGB values!")
+
+    assert(type(pos_list[1]) == "table" and #pos_list[1] == 3, "[DXL Error] Box3d: First Argument needs to be a table with 4 x,y,z values!")
+    assert(type(pos_list[2]) == "table" and #pos_list[2] == 3, "[DXL Error] Box3d: First Argument needs to be a table with 4 x,y,z values!")
+    assert(type(pos_list[3]) == "table" and #pos_list[3] == 3, "[DXL Error] Box3d: First Argument needs to be a table with 4 x,y,z values!")
+    assert(type(pos_list[4]) == "table" and #pos_list[4] == 3, "[DXL Error] Box3d: First Argument needs to be a table with 4 x,y,z values!")
 
     local TL = dx9.WorldToScreen(pos_list[1])
     local TR = dx9.WorldToScreen(pos_list[2])
@@ -399,7 +394,7 @@ end
 ]]
 
 --// BOX BoxESP
-function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healthbar = false, Distance = false, Nametag = false, Tracer = false, TracerType = "mouse", BoxType = 1} 
+function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healthbar = false, Distance = false, Nametag = false, Tracer = false, TracerType = 1, BoxType = 1} 
 
     local target = params.Target or nil
     local box_color = params.Color or {255,255,255}
@@ -407,34 +402,22 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
     local distance = params.Distance or false
     local nametag = params.Nametag or false
     local tracer = params.Tracer or false
-    local tracertype = string.lower(params.TracerType) or "mouse"
+    local tracertype = params.TracerType or 1 --// 1 = near-bottom, 2 = bottom, 3 = top, 4 = mouse
     local box_type = params.BoxType or 1 --// 1 = corners, 2 = 2d box, 3 = 3d box
 
     --// Error Handling
-    assert(type(box_type) == "number" and (box_type == 1 or box_type == 2 or box_type == 3), "[DXL Error] BoxESP: BoxType Argument needs to be a number! (see docs)")
+    assert(type(tracertype) == "number" and (tracertype == 1 or tracertype == 2 or tracertype == 3 or tracertype == 4), "[DXL Error] BoxESP: TracerType Argument needs to be a number! (1 - 4)")
+    assert(type(box_type) == "number" and (box_type == 1 or box_type == 2 or box_type == 3), "[DXL Error] BoxESP: BoxType Argument needs to be a number! (1 - 3)")
     assert(type(target) == "number" and dx9.GetChildren(target) ~= nil, "[DXL Error] BoxESP: Target Argument needs to be a number (pointer) to character!")
     assert(type(box_color) == "table" and #box_color == 3, "[DXL Error] BoxESP: Color Argument needs to be a table with 3 RGB values!")
 
     if dx9.FindFirstChild(target, "HumanoidRootPart") and dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart")) then
         local torso = dx9.GetPosition(dx9.FindFirstChild(target, "HumanoidRootPart"))
 
+        if torso.x < 0 or torso.y < 0 or torso.x > dx9.size().width or torso.y > dx9.size().height then return end
+
         local HeadPosY = torso.y + 2.5
         local LegPosY = torso.y - 3.5
-
-        --// yusuf code  
-        --[[
-        local top = dx9.WorldToScreen({torso.x , HeadPosY, torso.z})
-        local bottom = dx9.WorldToScreen({torso.x , LegPosY, torso.z})
-
-        local myheight = bottomPositon.y - topPosition.y
-        local mywidth = (myheight / 2) / 1,2
-
-        local TopLeft(hrpPosition.x - mywidth, hrpPosition.y - myheight)
-        local BottomRight(hrpPosition.x + mywidth, hrpPosition.y)
-        
-        DrawFilledBox(TopLeft, BottomRight, Colours::background_colour)
-
-        ]]
 
         local Top = dx9.WorldToScreen({torso.x , HeadPosY, torso.z})
         local Bottom = dx9.WorldToScreen({torso.x , LegPosY, torso.z})
@@ -466,11 +449,6 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
             dxl.Box3d({torso.x - 2, HeadPosY, torso.z - 2}, {torso.x + 2, LegPosY, torso.z + 2}, box_color)
         end
 
-        --dx9.DrawLine({TL.x - height/3, TL.y}, {TR.x + height/3, TR.y}, box_color) -- Top
-        --dx9.DrawLine({BL.x - height/3, BL.y}, {BR.x + height/3, BR.y}, box_color) -- Bottom
-        --dx9.DrawLine({TR.x + height/3, TR.y}, {BR.x + height/3, BR.y}, box_color) -- Right
-        --dx9.DrawLine({BL.x - height/3, BL.y}, {TL.x - height/3, TL.y}, box_color) -- Left
-
         if healthbar then
             if dx9.FindFirstChild(target, "Humanoid") then
                 local tl = {Top.x + width - 5, Top.y + 1}
@@ -487,9 +465,6 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
                 dx9.DrawBox({tl[1] - 1, tl[2] - 1}, {br[1] + 1, br[2] + 1}, box_color) -- Outer
                 dx9.DrawFilledBox({tl[1], tl[2]}, {br[1], br[2]}, {0,0,0}) -- Inner Black
                 dx9.DrawFilledBox({tl[1] + 1, br[2] - 1}, {br[1] - 1,    (br[2] + addon + 1)   }, {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0}) -- Inner
-
-                --dx9.DrawFilledBox({x - (size_x/2) + offset[1], y + offset[2]}, {x + (size_x/2) + offset[1], y - size_y + offset[2]}, {0,0,0});
-                --dx9.DrawFilledBox({x - ((size_x/2) - 1) + offset[1], y - 1 + offset[2]}, {x - ((size_x/2) - 1) + temp + offset[1], y - (size_y - 1) + offset[2]},   {255 - 255 / (maxhp / hp), 255 / (maxhp / hp), 0});
             else
                 error("[DXL Error] BoxESP: Target has no humanoid, healthbar not added!")
             end
@@ -506,10 +481,16 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
         end
 
         if tracer then
-            local loc = {dx9.GetMouse().x, dx9.GetMouse().y} -- Location of tracer start
+            local loc -- Location of tracer start
 
-            if tracertype == "bottom" then
+            if tracertype == 1 then
                 loc = {dx9.size().width / 2, dx9.size().height / 1.1}
+            elseif tracertype == 2 then
+                loc = {dx9.size().width / 2, dx9.size().height}
+            elseif tracertype == 3 then
+                loc = {dx9.size().width / 2, 1}
+            else
+                loc = {dx9.GetMouse().x, dx9.GetMouse().y}
             end
 
             dx9.DrawLine(loc, {Top.x + width + (((Bottom.x - width) - (Top.x + width)) / 2), Bottom.y}, box_color)
@@ -541,19 +522,15 @@ end
 --// Troll Command
 --[[
 function dxl.Troll()
-
     
-
     if sleep(3, "core1") then
         dx9.MouseMove(dxl.GetCoords({20, 1040}))
         dx9.Mouse1Click()
     end
-
     if sleep(1, "core1") then
         dx9.MouseMove(dxl.GetCoords({20, 990}))
         dx9.Mouse1Click()
     end
-
     if sleep(1, "core1") then
         dx9.MouseMove(dxl.GetCoords({20, 910}))
         --dx9.Mouse1Click() 
@@ -1199,5 +1176,3 @@ if _G.betterdebugrun == nil then
     end
     _G.betterdebugrun = {}
 end
------
-
