@@ -3,10 +3,10 @@
 
 --// Presets for supg's smol brain to rember
 local Game = dx9.GetDatamodel();
-local Workspace = dx9.FindFirstChild(Game,"Workspace");
+local Workspace = dx9.FindFirstChildOfClass(Game,"Workspace");
 local Mouse = dx9.GetMouse();
 local LocalPlayer = dx9.get_localplayer();
-local Players = dx9.get_players();
+local Players = dx9.get_players()
 
 local Screen = {
     x = dx9.size().width;
@@ -52,7 +52,6 @@ if _G.dxl == nil then
         Dragging = false;
 
         --// Character Stuff (saved for optimization)
-        Characters = {};
         PlayerFolder = nil;
 
         --// Rainbow
@@ -496,6 +495,10 @@ function dxl.BoxESP(params) -- params = {*Target = model, Color = {r,g,b}, Healt
 end
 
 
+
+
+
+
 --[[
  ██████╗  █████╗ ███╗   ███╗███████╗    ███████╗██╗   ██╗███╗   ██╗ ██████╗███████╗
 ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔════╝██║   ██║████╗  ██║██╔════╝██╔════╝
@@ -612,7 +615,7 @@ end
 
 --// Get Local Player
 function dxl.GetLocalPlayer()
-    return dxl.Game("Players", dxl.GetLocalPlayerName())
+    return dx9.FindFirstChild(dx9.FindFirstChildOfClass(dx9.GetDatamodel(), "Players"), dx9.get_localplayer().Info.Name)
 end
 
 --// Get PlayerGui of Local Player
@@ -622,14 +625,14 @@ end
 
 --// Get Player
 function dxl.GetPlayer(name)
-    return dx9.FindFirstChild(dxl.Game("Players"), name)
+    return dx9.FindFirstChild(dx9.FindFirstChildOfClass(dx9.GetDatamodel(), "Players"), name)
 end
 
 --// Get Player PlayerFolder (doesent work for some games)
 function dxl.GetPlayerFolder()
     if dxl.PlayerFolder ~= nil then return dxl.PlayerFolder end
 
-    for i,v in pairs(dxl.GetDescendants(dxl.Game("Workspace"))) do
+    for i,v in pairs(dxl.GetDescendants(dx9.FindFirstChildOfClass(dx9.GetDatamodel(), "Workspace"))) do
         if dx9.GetName(v) == dxl.GetLocalPlayerName() and dx9.GetType(v) == "Model" then
             dxl.PlayerFolder = dx9.GetParent(v)
             return dx9.GetParent(v)
@@ -640,7 +643,7 @@ end
 
 --// Get Local Character
 function dxl.GetLocalCharacter()
-    return dxl.GetCharacter(dxl.GetLocalPlayer())
+    return dx9.GetCharacter(dx9.FindFirstChild(dx9.FindFirstChildOfClass(dx9.GetDatamodel(), "Players"), dx9.get_localplayer().Info.Name))
 end
 
 
